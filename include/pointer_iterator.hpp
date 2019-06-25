@@ -204,6 +204,7 @@ class const_pointer_reverse_iterator {
 
     const_pointer_reverse_iterator ( const_pointer p_ ) noexcept : m_pointer ( p_ ) { }
     const_pointer_reverse_iterator ( pointer p_ ) noexcept : m_pointer ( const_cast<const_pointer> ( p_ ) ) { }
+    const_pointer_reverse_iterator ( const_pointer_reverse_iterator const & pi_ ) noexcept : m_pointer ( pi_.m_pointer ) { }
     const_pointer_reverse_iterator ( const_pointer_reverse_iterator && pi_ ) noexcept : m_pointer ( std::forward<const_pointer> ( pi_.m_pointer ) ) { }
     const_pointer_reverse_iterator ( pointer_reverse_iterator && pi_ ) noexcept : m_pointer ( std::forward<const_pointer> ( pi_.m_pointer ) ) { }
 
