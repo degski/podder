@@ -96,10 +96,10 @@ class podder {
     using value_type = Type;
     using optional_value_type = std::optional<value_type>;
     using pointer = value_type * ;
-    using const_pointer = const value_type*;
+    using const_pointer = value_type const *;
 
     using reference = value_type & ;
-    using const_reference = const value_type&;
+    using const_reference = value_type const &;
     using rv_reference = value_type && ;
 
     using size_type = SizeType;
@@ -109,9 +109,9 @@ class podder {
     using allocator_type = ::pdr::detail::null_allocator<Type>;
 
     using iterator = pointer_iterator<value_type, size_type>;
-    using const_iterator = const pointer_iterator<value_type, size_type>;
+    using const_iterator = const_pointer_iterator<value_type, size_type>;
     using reverse_iterator = pointer_reverse_iterator<value_type, size_type>;
-    using const_reverse_iterator = const pointer_reverse_iterator<value_type, size_type>;
+    using const_reverse_iterator = const_pointer_reverse_iterator<value_type, size_type>;
 
     PRIVATE
 
@@ -843,7 +843,7 @@ class podder {
     [[ nodiscard ]] const_reverse_iterator rend ( ) const noexcept {
         return const_reverse_iterator { begin_pointer ( ) - 1 };
     }
-    [[ nodiscard ]] const_iterator crend ( ) const noexcept {
+    [[ nodiscard ]] const_reverse_iterator crend ( ) const noexcept {
         return const_reverse_iterator { begin_pointer ( ) - 1 };
     }
 
@@ -983,7 +983,7 @@ class podder {
                         while ( p != e ) {
                             *p++ = value;
                         }
-                        return pos;
+                        return { p };
                     }
                     else {
                         const podder old ( *this );
@@ -1030,7 +1030,7 @@ class podder {
                         }
                         d.m.size += count;
                         d.m.end += count;
-                        return pos;
+                        return { p };
                     }
                 }
             }
@@ -1062,12 +1062,12 @@ class podder {
                     }
                     d.m.size += count;
                     d.m.end += count;
-                    return pos;
+                    return { p };
                 }
             }
         }
         else {
-            return pos;
+            return { pos.get ( ) };
         }
     }
     template<typename InputIt, contiguous_input_iterator_t<InputIt> * = nullptr>
@@ -1090,7 +1090,7 @@ class podder {
                         while ( first != last ) {
                             *p++ = *first++;
                         }
-                        return pos;
+                        return { p };
                     }
                     else {
                         const podder old ( *this );
@@ -1133,7 +1133,7 @@ class podder {
                             *p++ = *first++;
                         }
                         d.m.end += count;
-                        return pos;
+                        return { p };
                     }
                 }
             } // non-svo.
@@ -1162,12 +1162,12 @@ class podder {
                         *p++ = *first++;
                     }
                     d.m.end += count;
-                    return pos;
+                    return { p };
                 }
             }
         }
         else {
-            return pos;
+            return { pos.get ( ) };
         }
     }
     iterator insert ( const_iterator pos, const_pointer first, const size_type count ) {
@@ -1177,11 +1177,11 @@ class podder {
                 if ( d.s.is_small ) {
                     const size_type s1 = d.s.size + count; // s1 = new size.
                     if ( s1 <= buff_size ( ) ) {
-                        const pointer p = pos.get ( );
+                        pointer const p = pos.get ( );
                         std::memmove ( ( void* ) ( p + count ), ( void* ) p, reinterpret_cast<char*> ( d.s.buffer + d.s.size ) - reinterpret_cast<char*> ( p ) );
                         d.s.size += count;
                         std::memcpy ( ( void* ) p, ( void* ) first, count * sizeof ( value_type ) );
-                        return pos;
+                        return { p };
                     }
                     else {
                         const podder old ( *this );
@@ -1217,12 +1217,12 @@ class podder {
                         return r;
                     }
                     else {
-                        const pointer p = pos.get ( );
+                        pointer const p = pos.get ( );
                         std::memmove ( ( void* ) ( p + count ), ( void* ) p, ( d.m.end - pos.get ( ) ) * sizeof ( value_type ) );
                         std::memcpy ( ( void* ) p, ( void* ) first, count * sizeof ( value_type ) );
                         d.m.size += count;
                         d.m.end += count;
-                        return pos;
+                        return { p };
                     }
                 }
             }
@@ -1245,17 +1245,17 @@ class podder {
                     return r;
                 }
                 else {
-                    const pointer p = pos.get ( );
+                    pointer const p = pos.get ( );
                     std::memmove ( ( void* ) ( p + count ), ( void* ) p, ( d.m.end - pos.get ( ) ) * sizeof ( value_type ) );
                     std::memcpy ( ( void* ) p, ( void* ) first, count * sizeof ( value_type ) );
                     d.m.size += count;
                     d.m.end += count;
-                    return pos;
+                    return { p };
                 }
             }
         }
         else {
-            return pos;
+            return { pos.get ( ) };
         }
     }
     [[ maybe_unused ]] iterator insert ( const_iterator pos, const_pointer first, const_pointer last ) {
@@ -1288,10 +1288,10 @@ class podder {
         if constexpr ( svo ( ) ) {
             if ( d.s.is_small ) {
                 if ( d.s.size < buff_size ( ) ) { // assign into small vector.
-                    const pointer p = pos.get ( );
+                    pointer const p = pos.get ( );
                     std::memmove ( ( void* ) ( p + 1 ), ( void* ) p, reinterpret_cast<char*> ( d.s.buffer + d.s.size++ ) - reinterpret_cast<char*> ( p ) );
                     new ( p ) value_type { std::forward<Args> ( args )... };
-                    return pos;
+                    return { p };
                 }
                 else { // small vector -> medium vector.
                     const size_type c = growth_policy::grow_capacity_from ( buff_size ( ) );
@@ -1316,11 +1316,11 @@ class podder {
                     return iterator ( new ( p ) value_type { std::forward<Args> ( args )... } );
                 }
                 else {
-                    const pointer p = pos.get ( );
+                    pointer const p = pos.get ( );
                     ++d.m.size;
                     std::memmove ( ( void* ) ( p + 1 ), ( void* ) ( p ), reinterpret_cast<char*> ( d.m.end++ ) - reinterpret_cast<char*> ( p ) );
                     new ( p ) value_type { std::forward<Args> ( args )... };
-                    return pos;
+                    return { p };
                 }
             }
         }
