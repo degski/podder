@@ -45,7 +45,7 @@ struct visual_studio_growth_policy {
     using size_type = SizeType;
 
     // The growth policy in the VC-implementation of std::vector ( c = c + c / 2 ).
-    static constexpr size_type grow_capacity_from ( const size_type capacity_ = 1 ) noexcept pure_function {
+    static constexpr size_type grow_capacity_from ( size_type const capacity_ = 1 ) noexcept pure_function {
         assert ( capacity_ < ( std::numeric_limits<size_type>::max ( ) - ( capacity_ / 2 ) ) );
         return std::max ( size_type { 2 }, capacity_ + capacity_ / 2 );
     }
@@ -57,7 +57,7 @@ struct ratio_growth_policy {
 
     using size_type = SizeType;
 
-    static constexpr size_type grow_capacity_from ( const size_type capacity_ = 1 ) noexcept pure_function {
+    static constexpr size_type grow_capacity_from ( size_type const capacity_ = 1 ) noexcept pure_function {
         // assert tbd
         return std::max ( std::size_t { 2 }, ( R::num * static_cast<std::size_t> ( capacity_ ) + 1 ) / R::den );
     }
@@ -85,7 +85,7 @@ struct additive_growth_policy {
     using size_type = SizeType;
 
     // parameter specifies the requested additional capacity.
-    static constexpr size_type grow_capacity_from ( const size_type capacity_ = 0, const size_type added_capacity_ = 1 ) noexcept pure_function {
+    static constexpr size_type grow_capacity_from ( size_type const capacity_ = 0, size_type const added_capacity_ = 1 ) noexcept pure_function {
         return capacity_ + added_capacity_;
     }
 };

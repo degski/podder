@@ -63,8 +63,8 @@ class pointer_iterator {
     [[ nodiscard ]] bool operator == ( pointer_iterator& other_ ) const noexcept { return m_pointer == other_.m_pointer; }
     [[ nodiscard ]] bool operator != ( pointer_iterator& other_ ) const noexcept { return not ( *this == other_ ); }
 
-    [[ nodiscard ]] pointer_iterator operator + ( const size_type i_ ) const noexcept { return { m_pointer + i_ }; }
-    [[ nodiscard ]] pointer_iterator operator - ( const size_type i_ ) const noexcept { return { m_pointer - i_ }; }
+    [[ nodiscard ]] pointer_iterator operator + ( size_type const i_ ) const noexcept { return { m_pointer + i_ }; }
+    [[ nodiscard ]] pointer_iterator operator - ( size_type const i_ ) const noexcept { return { m_pointer - i_ }; }
 
     [[ nodiscard ]] value_type& operator * ( ) noexcept { return *m_pointer; }
     [[ nodiscard ]] value_type& operator * ( ) const noexcept { return *m_pointer; }
@@ -109,8 +109,8 @@ class const_pointer_iterator {
     [[ nodiscard ]] bool operator == ( const_pointer_iterator & other_ ) const noexcept { return m_pointer == other_.m_pointer; }
     [[ nodiscard ]] bool operator != ( const_pointer_iterator & other_ ) const noexcept { return not ( *this == other_ ); }
 
-    [[ nodiscard ]] const_pointer_iterator operator + ( const size_type i_ ) const noexcept { return { m_pointer + i_ }; }
-    [[ nodiscard ]] const_pointer_iterator operator - ( const size_type i_ ) const noexcept { return { m_pointer - i_ }; }
+    [[ nodiscard ]] const_pointer_iterator operator + ( size_type const i_ ) const noexcept { return { m_pointer + i_ }; }
+    [[ nodiscard ]] const_pointer_iterator operator - ( size_type const i_ ) const noexcept { return { m_pointer - i_ }; }
 
     [[ nodiscard ]] value_type & operator * ( ) noexcept { return *m_pointer; }
     [[ nodiscard ]] value_type & operator * ( ) const noexcept { return *m_pointer; }
@@ -172,8 +172,8 @@ class pointer_reverse_iterator {
     [[ nodiscard ]] bool operator == ( pointer_reverse_iterator & other_ ) const noexcept { return m_pointer == other_.m_pointer; }
     [[ nodiscard ]] bool operator != ( pointer_reverse_iterator & other_ ) const noexcept { return not ( *this == other_ ); }
 
-    [[ nodiscard ]] pointer_reverse_iterator operator - ( const size_type i_ ) const noexcept { return { m_pointer + i_ }; }
-    [[ nodiscard ]] pointer_reverse_iterator operator + ( const size_type i_ ) const noexcept { return { m_pointer - i_ }; }
+    [[ nodiscard ]] pointer_reverse_iterator operator - ( size_type const i_ ) const noexcept { return { m_pointer + i_ }; }
+    [[ nodiscard ]] pointer_reverse_iterator operator + ( size_type const i_ ) const noexcept { return { m_pointer - i_ }; }
 
     [[ nodiscard ]] value_type & operator * ( ) noexcept { return *m_pointer; }
     [[ nodiscard ]] value_type & operator * ( ) const noexcept { return *m_pointer; }
@@ -216,8 +216,8 @@ class const_pointer_reverse_iterator {
     [[ nodiscard ]] bool operator == ( const_pointer_reverse_iterator& other_ ) const noexcept { return m_pointer == other_.m_pointer; }
     [[ nodiscard ]] bool operator != ( const_pointer_reverse_iterator& other_ ) const noexcept { return not ( *this == other_ ); }
 
-    [[ nodiscard ]] const_pointer_reverse_iterator operator - ( const size_type i_ ) const noexcept { return { m_pointer + i_ }; }
-    [[ nodiscard ]] const_pointer_reverse_iterator operator + ( const size_type i_ ) const noexcept { return { m_pointer - i_ }; }
+    [[ nodiscard ]] const_pointer_reverse_iterator operator - ( size_type const i_ ) const noexcept { return { m_pointer + i_ }; }
+    [[ nodiscard ]] const_pointer_reverse_iterator operator + ( size_type const i_ ) const noexcept { return { m_pointer - i_ }; }
 
     [[ nodiscard ]] value_type& operator * ( ) noexcept { return *m_pointer; }
     [[ nodiscard ]] value_type& operator * ( ) const noexcept { return *m_pointer; }
