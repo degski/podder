@@ -327,15 +327,15 @@ class podder {
     podder ( const std::initializer_list<value_type> il ) :
         podder ( il.begin ( ), static_cast< size_type > ( il.size ( ) ) ) { }
     template<auto S>
-    podder ( const std::array<value_type, S> & a ) :
+    podder ( std::array<value_type, S> const & a ) :
         podder ( a.d ( ), static_cast< size_type > ( S ) ) { }
-    podder ( const std::vector<value_type> & v ) :
+    podder ( std::vector<value_type> const & v ) :
         podder ( v.d ( ), static_cast< size_type > ( v.size ( ) ) ) { }
     template<auto S>
-    podder ( const value_type ( *a ) [ S ] ) :
+    podder ( value_type const ( *a ) [ S ] ) :
         podder ( a, static_cast< size_type > ( S ) ) { }
     template<typename Container>
-    podder ( const Container & c ) :
+    podder ( Container const & c ) :
         podder ( std::begin ( c ), std::end ( c ) ) { }
     explicit podder ( const_pointer first, const_pointer last ) :
         podder ( first, static_cast< size_type > ( last - first ) ) { }
@@ -417,7 +417,7 @@ class podder {
         return *this;
     }
     template<typename Container>
-    [[ maybe_unused ]] podder & operator = ( const Container & container ) {
+    [[ maybe_unused ]] podder & operator = ( Container const & container ) {
         size_type const count = static_cast< size_type > ( container.size ( ) );
         if ( not count ) {
             clear ( );
@@ -455,7 +455,7 @@ class podder {
         }
         else { // discontiguous container copy assignment.
             auto first = std::cbegin ( container );
-            const auto last = std::cend ( container );
+            auto const last = std::cend ( container );
             if ( count <= buff_size ( ) ) {
                 if ( not d.s.is_small ) {
                     std::free ( d.m.end - d.m.size );
@@ -930,7 +930,7 @@ class podder {
 
     void skrink_to_fit ( ) {
         if constexpr ( svo ( ) ) {
-            if ( not ( d.s.is_small ) ) {
+            if ( not d.s.is_small ) {
                 if ( d.m.size < d.m.capacity ) {
                     d.m.end = static_cast<pointer> ( std::realloc ( d.m.end - d.m.size, d.m.size * sizeof ( value_type ) ) ) + d.m.size;
                 }
@@ -1617,7 +1617,7 @@ class podder {
 
     PRIVATE
 
-    void resize_reserve_only_impl ( size_type const size, const bool construct ) {
+    void resize_reserve_only_impl ( size_type const size, bool const construct ) {
         if constexpr ( svo ( ) ) {
             if ( d.s.is_small ) {
                 if ( size <= buff_size ( ) ) {

@@ -80,7 +80,7 @@ bool podder_emplace_back_type_test ( std::size_t x ) { // test emplace_back.
 
     for ( std::size_t i = 0; i < 200; ++i ) {
         vv.emplace_back ( );
-        const auto n = dis ( gen );
+        auto const n = dis ( gen );
         for ( std::size_t j = 0; j < n; ++j ) {
             vv.back ( ).emplace_back ( ( value_type ) j );
             a += j;

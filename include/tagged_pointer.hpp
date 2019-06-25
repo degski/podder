@@ -77,7 +77,7 @@ struct tagged_pointer {
 
     tagged_pointer ( ) noexcept {
     }
-    tagged_pointer ( const tagged_pointer & tp_ ) noexcept :
+    tagged_pointer ( tagged_pointer const & tp_ ) noexcept :
         tp ( tp_.tp ) {
     }
     explicit tagged_pointer ( pointer p ) noexcept :
@@ -91,12 +91,12 @@ struct tagged_pointer {
     constexpr void large ( bool b ) noexcept { tp.tag.is_large = b; }
     [[ nodiscard ]] constexpr bool is_large ( ) const noexcept { return tp.tag.is_large; }
 
-    [[ nodiscard ]] constexpr tagged_pointer & operator = ( const tagged_pointer & rhs ) noexcept {
+    [[ nodiscard ]] constexpr tagged_pointer & operator = ( tagged_pointer const & rhs ) noexcept {
         tp.ptr = rhs.tp.ptr;
         return *this;
     }
 
-    [[ nodiscard ]] constexpr tagged_pointer & operator = ( const pointer rhs ) noexcept {
+    [[ nodiscard ]] constexpr tagged_pointer & operator = ( pointer const rhs ) noexcept {
         tp.ptr = rhs;
         return *this;
     }
@@ -113,26 +113,26 @@ struct tagged_pointer {
         return tmp;
     }
 
-    [[ nodiscard ]] constexpr std::ptrdiff_t operator - ( const tagged_pointer & rhs ) const noexcept {
+    [[ nodiscard ]] constexpr std::ptrdiff_t operator - ( tagged_pointer const & rhs ) const noexcept {
         assert ( tp.tag.ptr > rhs.tp.tag.ptr );
         return static_cast<pointer> ( tp.tag.ptr ) - static_cast<pointer> ( rhs.tp.tag.ptr );
     }
 
-    [[ nodiscard ]] constexpr std::ptrdiff_t operator - ( const pointer rhs ) const noexcept {
+    [[ nodiscard ]] constexpr std::ptrdiff_t operator - ( pointer const rhs ) const noexcept {
         assert ( static_cast<pointer> ( tp.tag.ptr ) > rhs );
         return static_cast<pointer> ( tp.tag.ptr ) - rhs;
     }
 
     // return a pointer.
     template<typename Int, typename = std::enable_if_t<std::is_integral<Int>::value>>
-    [[ nodiscard ]] constexpr pointer operator - ( const Int rhs ) const noexcept {
+    [[ nodiscard ]] constexpr pointer operator - ( Int const rhs ) const noexcept {
         assert ( tp.tag.ptr > rhs * sizeof ( value_type ) );
         return static_cast<pointer> ( tp.tag.ptr ) - rhs;
     }
 
     // return a tagged_pointer.
     template<typename Int, typename = std::enable_if_t<std::is_integral<Int>::value>>
-    [[ maybe_unused ]] constexpr tagged_pointer & operator -= ( const Int rhs ) noexcept {
+    [[ maybe_unused ]] constexpr tagged_pointer & operator -= ( Int const rhs ) noexcept {
         assert ( tp.tag.ptr > rhs * sizeof ( value_type ) );
         tp.tag.ptr -= rhs * sizeof ( value_type );
         return *this;
@@ -150,26 +150,26 @@ struct tagged_pointer {
         return tmp;
     }
 
-    [[ nodiscard ]] constexpr std::ptrdiff_t operator + ( const tagged_pointer & rhs ) const noexcept {
+    [[ nodiscard ]] constexpr std::ptrdiff_t operator + ( tagged_pointer const & rhs ) const noexcept {
         assert ( ( tp.tag.ptr - rhs.tp.tag.ptr ) <= ( std::numeric_limits<std::uintptr_t>::max ( ) >> 8 ) );
         return static_cast<pointer> ( tp.tag.ptr ) + static_cast<pointer> ( rhs.tp.tag.ptr );
     }
 
-    [[ nodiscard ]] constexpr std::ptrdiff_t operator + ( const pointer rhs ) const noexcept {
+    [[ nodiscard ]] constexpr std::ptrdiff_t operator + ( pointer const rhs ) const noexcept {
         assert ( ( static_cast<pointer> ( tp.tag.ptr ) - rhs ) <= ( std::numeric_limits<std::uintptr_t>::max ( ) >> 8 ) );
         return static_cast<pointer> ( tp.tag.ptr ) + rhs;
     }
 
     // returns a pointer.
     template<typename Int, typename = std::enable_if_t<std::is_integral<Int>::value>>
-    [[ nodiscard ]] constexpr pointer operator + ( const Int rhs ) const noexcept {
+    [[ nodiscard ]] constexpr pointer operator + ( Int const rhs ) const noexcept {
         assert ( ( tp.tag.ptr - rhs * sizeof ( value_type ) ) <= ( std::numeric_limits<std::uintptr_t>::max ( ) >> 8 ) );
         return static_cast<pointer> ( tp.tag.ptr ) + rhs;
     }
 
     // return a tagged_pointer.
     template<typename Int, typename = std::enable_if_t<std::is_integral<Int>::value>>
-    [[ maybe_unused ]] constexpr tagged_pointer & operator += ( const Int rhs ) noexcept {
+    [[ maybe_unused ]] constexpr tagged_pointer & operator += ( Int const rhs ) noexcept {
         assert ( ( tp.tag.ptr - rhs * sizeof ( value_type ) ) <= ( std::numeric_limits<std::uintptr_t>::max ( ) >> 8 ) );
         tp.tag.ptr += rhs * sizeof ( value_type );
         return *this;

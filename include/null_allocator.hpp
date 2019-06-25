@@ -61,12 +61,12 @@ class null_allocator {
 namespace pdr {
 
 template<typename T, typename U>
-bool operator == ( const detail::null_allocator<T> &, const detail::null_allocator<U> & ) noexcept {
+bool operator == ( detail::null_allocator<T> const &, detail::null_allocator<U> const & ) noexcept {
     return true;
 }
 
 template<typename T, typename U>
-bool operator != ( const detail::null_allocator<T> &, const detail::null_allocator<U> & ) noexcept {
+bool operator != ( detail::null_allocator<T> const &, detail::null_allocator<U> const & ) noexcept {
     return false;
 }
 

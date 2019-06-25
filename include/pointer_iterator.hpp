@@ -125,17 +125,17 @@ class const_pointer_iterator {
 
 
 template<typename PointerIteratorType>
-[[ nodiscard ]] typename PointerIteratorType::size_type operator - ( const typename PointerIteratorType::pointer p_, const PointerIteratorType it_ ) noexcept {
+[[ nodiscard ]] typename PointerIteratorType::size_type operator - ( typename PointerIteratorType::pointer const p_, PointerIteratorType const it_ ) noexcept {
     return ( typename PointerIteratorType::size_type ) ( p_ - it_.get ( ) );
 }
 
 template<typename PointerIteratorType>
-[[ nodiscard ]] typename PointerIteratorType::size_type operator - ( const PointerIteratorType it_, const typename PointerIteratorType::pointer p_ ) noexcept {
+[[ nodiscard ]] typename PointerIteratorType::size_type operator - ( PointerIteratorType const it_, typename PointerIteratorType::pointer const p_ ) noexcept {
     return ( typename PointerIteratorType::size_type ) ( it_.get ( ) - p_ );
 }
 
 template<typename PointerIteratorType>
-[[ nodiscard ]] typename PointerIteratorType::size_type operator - ( const PointerIteratorType it1_, const PointerIteratorType it2_ ) noexcept {
+[[ nodiscard ]] typename PointerIteratorType::size_type operator - ( PointerIteratorType const it1_, PointerIteratorType const it2_ ) noexcept {
     return ( typename PointerIteratorType::size_type ) ( it1_.get ( ) - it2_.get ( ) );
 }
 
