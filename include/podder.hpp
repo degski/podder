@@ -167,7 +167,7 @@ class podder {
     struct is_array_iterator {
         // 1012 is the max value untill the maximum recursive levels of 1024 get exceeded (of my clang
         // implementation), decrease or increase this value as required/allowed by your implementation.
-        static constexpr bool value = is_array_iterator_impl<It, typename It::value_type, 128>::value;
+        static constexpr bool value = is_array_iterator_impl<It, typename It::value_type, 384>::value;
     };
 
     // is_contiguous_input_iterator.
@@ -222,14 +222,14 @@ class podder {
                     pointer p = d.s.buffer;
                     while ( count-- ) {
                         new ( p++ ) value_type ( std::forward<value_type> ( { v } ) );
-                        v += stride;
+                        v += static_cast<value_type> ( stride );
                     }
                 }
                 else {
                     new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
                     while ( count-- ) {
                         new ( d.m.end++ ) value_type ( std::forward<value_type> ( { v } ) );
-                        v += stride;
+                        v += static_cast<value_type> ( stride );
                     }
                 }
             }
@@ -237,7 +237,7 @@ class podder {
                 new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
                 while ( count-- ) {
                     new ( d.m.end++ ) value_type ( std::forward<value_type> ( { v } ) );
-                    v += stride;
+                    v += static_cast<value_type> ( stride );
                 }
             }
         }

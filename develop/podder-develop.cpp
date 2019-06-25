@@ -443,7 +443,7 @@ int podder_assignment_test ( ) {
     podder<std::uint8_t> p2 = c;
     print ( p2 );
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 
@@ -474,7 +474,7 @@ int main343554 ( ) {
 
     std::cout << p6 [ 1 ] << nl;
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 
