@@ -141,7 +141,12 @@ template<typename PointerIteratorType>
 
 
 template<typename T, typename SizeType = std::size_t>
+class const_pointer_reverse_iterator;
+
+template<typename T, typename SizeType = std::size_t>
 class pointer_reverse_iterator {
+
+    friend class const_pointer_reverse_iterator<T, SizeType>;
 
     static_assert ( std::disjunction<std::is_same<SizeType, std::uint32_t>, std::is_same<SizeType, std::uint64_t>>::value, "SizeType must be an unsigned 32- or 64-bit integer type!" );
 
@@ -180,7 +185,7 @@ class pointer_reverse_iterator {
     pointer m_pointer;
 };
 
-template<typename T, typename SizeType = std::size_t>
+template<typename T, typename SizeType>
 class const_pointer_reverse_iterator {
 
     static_assert ( std::disjunction<std::is_same<SizeType, std::uint32_t>, std::is_same<SizeType, std::uint64_t>>::value, "SizeType must be an unsigned 32- or 64-bit integer type!" );
