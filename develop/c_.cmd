@@ -1,0 +1,7 @@
+:: clang-cl -fuse-ld=lld -flto=thin /D "NDEBUG" /D "_CONSOLE" /D "NOMINMAX" /D "_UNICODE" /D "UNICODE" -Xclang -fcxx-exceptions -Xclang -std=c++2a -Qunused-arguments -Xclang -ffast-math -Xclang -ffunction-sections -Xclang -Wno-deprecated-declarations -Xclang -Wno-unknown-pragmas -Xclang -Wno-ignored-pragmas -mmmx  -msse  -msse2 -msse3 -mssse3 -msse4.1 -msse4.2 -mavx -mavx2  -Xclang -Wno-unused-variable -Xclang -Wno-language-extension-token -I"y:\vcpkg\installed\x64-windows-static\include" -O2 -Oi -MT development.cpp -link "Shlwapi.lib" "y:\vcpkg\installed\x64-windows-static\lib\benchmark_main.lib" "y:\vcpkg\installed\x64-windows-static\lib\benchmark.lib"
+
+clang-cl -m64 -fmsc-version=1921 -fuse-ld=lld -flto=thin /D "NDEBUG" /D "_CONSOLE" /D "NOMINMAX" /D "_UNICODE" /D "UNICODE" -Xclang -fcxx-exceptions -Xclang -std=c++2a -fno-delayed-template-parsing -march=native -mmmx -msse -msse2 -msse3 -msse4.1 -msse4.2 -maes -mavx -mavx2 -mbmi -mbmi2 -mpopcnt -mf16c -mxsaveopt -mlzcnt -mfma -mpclmul -mxsave -mrdrnd -mfxsr -madx -Xclang -fforce-enable-int128 -Xclang -faligned-allocation -Xclang -pedantic -Xclang -ffast-math -Xclang -fcolor-diagnostics -Xclang -fcoroutines-ts -Xclang -ffine-grained-bitfield-accesses -Xclang -ffixed-point -Xclang -fsized-deallocation -I"y:\vcpkg\installed\x64-windows-static\include" -O2 -Oi -MT development.cpp -link "Shlwapi.lib" "y:\vcpkg\installed\x64-windows-static\lib\benchmark_main.lib" "y:\vcpkg\installed\x64-windows-static\lib\benchmark.lib"
+
+
+
+
