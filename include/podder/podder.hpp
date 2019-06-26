@@ -60,7 +60,6 @@
 #define PRIVATE
 #define PUBLIC public:
 
-
 namespace detail { // keep the macros out of the code (as it's ugly).
 #ifdef _DEBUG
 using is_debug = std::true_type;
@@ -86,18 +85,15 @@ template<int I> void div ( char ( * ) [ I % 2 == 1 ] = 0 ) {
 #endif
 
 #if _WIN32 and USE_MIMALLOC
-    #if not defined ( USE_THIN_LTO )
-        #pragma comment ( lib, "mimalloc.lib" )
-    #else
+    #if defined ( USE_THIN_LTO )
         #pragma comment ( lib, "mimalloc-thin-lto.lib" )
+    #else
+        #pragma comment ( lib, "mimalloc.lib" )
     #endif
 #endif
 
-
 namespace pdr {
-
 #if USE_MIMALLOC
-
 [[ nodiscard ]] inline void* malloc ( std::size_t size ) noexcept {
     return mi_malloc ( size );
 }
@@ -113,9 +109,7 @@ namespace pdr {
 inline void free ( void* ptr ) noexcept {
     mi_free ( ptr );
 }
-
 #else
-
 [[ nodiscard ]] inline void* malloc ( std::size_t size ) noexcept {
     return std::malloc ( size );
 }
@@ -133,9 +127,7 @@ inline void free ( void* ptr ) noexcept {
 inline void free ( void* ptr ) noexcept {
     std::free ( ptr );
 }
-
 #endif
-
 } // namespace pdr
 
 template<typename Type = std::uint8_t, typename SizeType = std::size_t, typename GrowthPolicy = visual_studio_growth_policy<SizeType>>
@@ -2109,7 +2101,6 @@ void swap ( podder<Type, SizeType, GrowthPolicy> &, podder<Type, SizeType, Growt
 }
 
 }
-
 
 #undef PRIVATE
 #undef PUBLIC
