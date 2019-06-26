@@ -261,7 +261,7 @@ class podder {
             std::memset ( ( void* ) this, 0, sizeof ( *this ) );
         }
     }
-    podder ( size_type count, const_reference value, signed_size_type stride = 0 ) {
+    podder ( size_type count, const_reference value, signed_size_type stride = 0 ) noexcept {
         value_type v = value;
         if ( count ) {
             if constexpr ( svo ( ) ) {
@@ -293,7 +293,7 @@ class podder {
             small_clear ( );
         }
     }
-    podder ( size_type count ) {
+    podder ( size_type count ) noexcept {
         if ( count ) {
             if constexpr ( svo ( ) ) {
                 if ( count <= buff_size ( ) ) {
@@ -318,14 +318,14 @@ class podder {
             small_clear ( );
         }
     }
-    podder ( int count ) :
+    podder ( int count ) noexcept :
         podder ( static_cast<size_type> ( count ) ) {
     }
     template<typename InputIt, contiguous_input_iterator_t<InputIt> * = nullptr>
     podder ( InputIt first, InputIt last ) :
         podder ( &*first, static_cast<size_type> ( last - first ) ) { }
     template<typename InputIt, discontiguous_input_iterator_t<InputIt> * = nullptr>
-    podder ( InputIt first, InputIt last ) {
+    podder ( InputIt first, InputIt last ) noexcept {
         assert ( std::distance ( first, last ) >= 0 );
         size_type const count = ( size_type ) std::distance ( first, last );
         if ( count ) {
@@ -366,22 +366,22 @@ class podder {
         std::memcpy ( ( void* ) this, ( void* ) & p, sizeof ( podder ) );
         p.small_clear ( );
     }
-    podder ( std::initializer_list<value_type> il ) :
+    podder ( std::initializer_list<value_type> il ) noexcept :
         podder ( il.begin ( ), static_cast<size_type> ( il.size ( ) ) ) { }
     template<auto S>
-    podder ( std::array<value_type, S> const & a ) :
+    podder ( std::array<value_type, S> const & a ) noexcept :
         podder ( a.d ( ), static_cast< size_type > ( S ) ) { }
-    podder ( std::vector<value_type> const & v ) :
+    podder ( std::vector<value_type> const & v ) noexcept :
         podder ( v.d ( ), static_cast< size_type > ( v.size ( ) ) ) { }
     template<auto S>
-    podder ( value_type const ( *a ) [ S ] ) :
+    podder ( value_type const ( *a ) [ S ] ) noexcept :
         podder ( a, static_cast< size_type > ( S ) ) { }
     template<typename Container>
-    podder ( Container const & c ) :
+    podder ( Container const & c ) noexcept :
         podder ( std::begin ( c ), std::end ( c ) ) { }
-    explicit podder ( const_pointer first, const_pointer last ) :
+    explicit podder ( const_pointer first, const_pointer last ) noexcept :
         podder ( first, static_cast< size_type > ( last - first ) ) { }
-    explicit podder ( const_pointer first, size_type const count ) {
+    explicit podder ( const_pointer first, size_type const count ) noexcept {
         assert ( count >= 0 );
         if ( count ) {
             if constexpr ( svo ( ) ) {
@@ -422,7 +422,7 @@ class podder {
 
     // assignment operator.
 
-    [[ maybe_unused ]] podder & operator = ( podder const & rhs ) {
+    [[ maybe_unused ]] podder & operator = ( podder const & rhs ) noexcept {
         size_type const count = rhs.size ( );
         if ( not count ) {
             clear ( );
@@ -456,7 +456,7 @@ class podder {
         return *this;
     }
     template<typename Container>
-    [[ maybe_unused ]] podder & operator = ( Container const & container ) {
+    [[ maybe_unused ]] podder & operator = ( Container const & container ) noexcept {
         size_type const count = static_cast< size_type > ( container.size ( ) );
         if ( not count ) {
             clear ( );
@@ -528,7 +528,7 @@ class podder {
         return *this;
     }
     template<auto S>
-    [[ maybe_unused ]] podder & operator = ( value_type ( *a ) [ S ] ) {
+    [[ maybe_unused ]] podder & operator = ( value_type ( *a ) [ S ] ) noexcept {
         constexpr size_type count = static_cast< size_type > ( S );
         if constexpr ( count <= buff_size ( ) ) {
             if ( not d.s.is_small )
@@ -568,7 +568,7 @@ class podder {
 
     // assign.
 
-    void assign ( size_type count, const_reference value ) {
+    void assign ( size_type count, const_reference value ) noexcept {
         assert ( count >= 0 );
         if ( count ) {
             if constexpr ( svo ( ) ) {
@@ -625,11 +625,11 @@ class podder {
         }
     }
     template<typename InputIt, contiguous_input_iterator_t<InputIt> * = nullptr>
-    void assign ( InputIt first, InputIt last ) {
+    void assign ( InputIt first, InputIt last ) noexcept {
         assign ( &*first, static_cast< size_type > ( last - first ) );
     }
     template<typename InputIt, discontiguous_input_iterator_t<InputIt> * = nullptr>
-    void assign ( InputIt first, InputIt last ) {
+    void assign ( InputIt first, InputIt last ) noexcept {
         size_type const count = static_cast<size_type> ( std::distance ( first, last ) );
         assert ( std::distance ( first, last ) >= 0 );
         if ( count ) {
@@ -684,10 +684,10 @@ class podder {
             clear ( );
         }
     }
-    void assign ( std::initializer_list<value_type> il ) {
+    void assign ( std::initializer_list<value_type> il ) noexcept {
         assign ( il.begin ( ), static_cast<size_type> ( il.size ( ) ) );
     }
-    void assign ( const_pointer first, size_type const count ) {
+    void assign ( const_pointer first, size_type const count ) noexcept {
         assert ( count >= 0 );
         if ( count ) {
             if constexpr ( svo ( ) ) {
@@ -769,7 +769,7 @@ class podder {
         return *p;
     }
 
-    reference at_operator_impl ( size_type pos ) {
+    reference at_operator_impl ( size_type pos ) noexcept pure_function {
         if constexpr ( svo ( ) ) {
             return ( d.s.is_small ? d.s.buffer : ( d.m.end - d.m.size ) ) [ pos ];
         }
@@ -810,7 +810,7 @@ class podder {
     [[ nodiscard ]] reference back ( ) noexcept {
         return *back_pointer ( );
     }
-    [[ nodiscard ]] const_reference  back ( ) const noexcept {
+    [[ nodiscard ]] const_reference back ( ) const noexcept {
         return *back_pointer ( );
     }
 
@@ -902,7 +902,7 @@ class podder {
 
     // reserve.
 
-    void reserve ( size_type const count ) {
+    void reserve ( size_type const count ) noexcept {
         if constexpr ( svo ( ) ) {
             if ( d.s.is_small ) {
                 if ( count > buff_size ( ) ) {
@@ -946,7 +946,7 @@ class podder {
 
     // shrink to fit.
 
-    void skrink_to_fit ( ) {
+    void skrink_to_fit ( ) noexcept {
         if constexpr ( svo ( ) ) {
             if ( not d.s.is_small )
                 if ( d.m.size < d.m.capacity )
@@ -973,15 +973,15 @@ class podder {
 
     // insert.
 
-    [[ maybe_unused ]] iterator insert ( const_iterator pos, const_reference value ) {
+    [[ maybe_unused ]] iterator insert ( const_iterator pos, const_reference value ) noexcept {
         // std::cout << "iterator insert ( const_iterator pos, const_reference value )" << nl;
         return emplace ( pos, value_type { value } );
     }
-    [[ maybe_unused ]] iterator insert ( const_iterator pos, rv_reference value ) {
+    [[ maybe_unused ]] iterator insert ( const_iterator pos, rv_reference value ) noexcept {
         // std::cout << "iterator insert ( const_iterator pos, rv_reference value )" << nl;
         return emplace ( pos, std::forward<value_type> ( value ) );
     }
-    iterator insert ( const_iterator pos, size_type count, const_reference value ) {
+    iterator insert ( const_iterator pos, size_type count, const_reference value ) noexcept {
         // std::cout << "iterator insert ( const_iterator pos, size_type count, const_reference value )" << nl;
         if ( count ) {
             if constexpr ( svo ( ) ) {
@@ -1069,12 +1069,12 @@ class podder {
         return const_cast<iterator> ( pos );
     }
     template<typename InputIt, contiguous_input_iterator_t<InputIt> * = nullptr>
-    [[ maybe_unused ]] iterator insert ( const_iterator pos, InputIt first, InputIt last ) {
+    [[ maybe_unused ]] iterator insert ( const_iterator pos, InputIt first, InputIt last ) noexcept {
         // std::cout << "iterator insert ( const_iterator pos, InputIt first, InputIt last ) ( contiguous )" << nl;
         return insert ( pos, &*first, static_cast<size_type> ( last - first ) );
     }
     template<typename InputIt, discontiguous_input_iterator_t<InputIt> * = nullptr>
-    [[ maybe_unused ]] iterator insert ( const_iterator pos, InputIt first, InputIt last ) {
+    [[ maybe_unused ]] iterator insert ( const_iterator pos, InputIt first, InputIt last ) noexcept {
         // std::cout << "iterator insert ( const_iterator pos, InputIt first, InputIt last ) ( discontiguous )" << nl;
         const std::ptrdiff_t count = std::distance ( first, last ); // count values to be inserted.
         if ( count ) {
@@ -1154,7 +1154,7 @@ class podder {
         }
         return const_cast<iterator> ( pos );
     }
-    iterator insert ( const_iterator pos, const_pointer first, size_type const count ) {
+    [[ maybe_unused ]] iterator insert ( const_iterator pos, const_pointer first, size_type const count ) noexcept {
         // std::cout << "iterator insert ( const_iterator pos, const_pointer first, size_type const count )" << nl;
         if ( count ) {
             if constexpr ( svo ( ) ) {
@@ -1234,22 +1234,22 @@ class podder {
         }
         return const_cast<iterator> ( pos );
     }
-    [[ maybe_unused ]] iterator insert ( const_iterator pos, const_pointer first, const_pointer last ) {
+    [[ maybe_unused ]] iterator insert ( const_iterator pos, const_pointer first, const_pointer last ) noexcept {
         // std::cout << "iterator insert ( const_iterator pos, const_pointer first, const_pointer last )" << nl;
         return insert ( pos, first, static_cast<size_type> ( last - first ) );
     }
-    [[ maybe_unused ]] iterator insert ( const_iterator pos, std::initializer_list<value_type> il ) {
+    [[ maybe_unused ]] iterator insert ( const_iterator pos, std::initializer_list<value_type> il ) noexcept {
         // std::cout << "iterator insert ( const_iterator pos, std::initializer_list<value_type> il )" << nl;
         return insert ( pos, il.begin ( ), static_cast<size_type> ( il.size ( ) ) );
     }
 
     // emplace.
 
-    pointer mallocate ( size_type size ) {
-        d.m.end = static_cast<pointer> ( pdr::malloc ( static_cast< std::size_t > ( size ) * sizeof ( value_type ) ) );
+    [[ maybe_unused ]] pointer mallocate ( size_type size ) noexcept {
+        return ( d.m.end = static_cast<pointer> ( pdr::malloc ( static_cast< std::size_t > ( size ) * sizeof ( value_type ) ) ) );
     }
-    pointer reallocate ( pointer p, size_type size ) {
-        d.m.end = static_cast<pointer> ( pdr::realloc ( d.m.end - d.m.size, ( d.m.capacity = growth_policy::grow_capacity_from ( d.m.size ) ) * sizeof ( value_type ) ) );
+    [[ maybe_unused ]] pointer reallocate ( pointer p, size_type size ) noexcept {
+        return ( d.m.end = static_cast<pointer> ( pdr::realloc ( d.m.end - d.m.size, ( d.m.capacity = growth_policy::grow_capacity_from ( d.m.size ) ) * sizeof ( value_type ) ) ) );
     }
 
     void deallocate ( ) noexcept {
@@ -1258,7 +1258,7 @@ class podder {
     }
 
     template<typename... Args>
-    [[ maybe_unused ]] iterator emplace ( const_iterator pos, Args &&... args ) {
+    [[ maybe_unused ]] iterator emplace ( const_iterator pos, Args &&... args ) noexcept {
         // std::cout << "iterator emplace ( const_iterator pos, Args &&... args )" << nl;
         if constexpr ( svo ( ) ) {
             if ( d.s.is_small ) {
@@ -1346,7 +1346,7 @@ class podder {
 
     PRIVATE
 
-    bool not_have_duplicates ( const_reference value ) const noexcept pure_function {
+    [[ nodiscard ]] bool not_have_duplicates ( const_reference value ) const noexcept pure_function {
         bool not_found = true;
         pointer p = begin_pointer ( ), e = end_pointer ( );
         while ( p != e ) {
@@ -1363,7 +1363,7 @@ class podder {
         return true;
     }
 
-    bool have_duplicates ( const_reference value ) const noexcept pure_function {
+    [[ nodiscard ]] bool have_duplicates ( const_reference value ) const noexcept pure_function {
         return not not_have_duplicates ( value );
     }
 
@@ -1422,33 +1422,33 @@ class podder {
 
     // push_front.
 
-    [[ maybe_unused ]] reference push_front ( const_reference value ) {
+    [[ maybe_unused ]] reference push_front ( const_reference value ) noexcept {
         return insert ( begin ( ), value_type { value } );
     }
-    [[ maybe_unused ]] reference push_front ( rv_reference value ) {
+    [[ maybe_unused ]] reference push_front ( rv_reference value ) noexcept {
         return insert ( begin ( ), std::forward<value_type> ( value ) );
     }
 
     // push_back.
 
-    [[ maybe_unused ]] reference push_back ( const_reference value ) {
+    [[ maybe_unused ]] reference push_back ( const_reference value ) noexcept {
         return emplace_back ( value_type { value } );
     }
-    [[ maybe_unused ]] reference push_back ( rv_reference value ) {
+    [[ maybe_unused ]] reference push_back ( rv_reference value ) noexcept {
         return emplace_back ( std::forward<value_type> ( value ) );
     }
 
     // emplace_front.
 
     template<typename... Args>
-    [[ maybe_unused ]] reference emplace_front ( Args &&... args ) {
+    [[ maybe_unused ]] reference emplace_front ( Args &&... args ) noexcept {
         return insert ( begin ( ), value_type { std::forward<Args> ( args )... } );
     }
 
     // emplace_back.
 
     template<typename... Args>
-    [[ maybe_unused ]] reference emplace_back ( Args && ...args ) { // it's ugly (and code duplication), the nested if/then's, but it's the fastest (faster than gcc-style jump-table).
+    [[ maybe_unused ]] reference emplace_back ( Args && ...args ) noexcept { // it's ugly (and code duplication), the nested if/then's, but it's the fastest (faster than gcc-style jump-table).
         pointer pos = nullptr;
         if constexpr ( svo ( ) ) {
             if ( d.s.is_small ) { // assign into svo vector.
@@ -1492,15 +1492,15 @@ class podder {
 
     // pop_front.
 
-    void pop_front ( ) {
+    void pop_front ( ) noexcept {
         erase ( begin ( ) );
     }
 
-    void unchecked_pop_front ( ) {
+    void unchecked_pop_front ( ) noexcept {
         unchecked_erase ( begin ( ) );
     }
 
-    [[ nodiscard ]] optional_value_type pop_front_get ( ) {
+    [[ nodiscard ]] optional_value_type pop_front_get ( ) noexcept {
         /*
         if ( d.s.is_small ) {
         unchecked_erase_small_impl ( p.begin ( ), p );
@@ -1576,7 +1576,7 @@ class podder {
 
     PRIVATE
 
-    void resize_reserve_only_impl ( size_type const size, bool const construct ) {
+    void resize_reserve_only_impl ( size_type const size, bool const construct ) noexcept {
         if constexpr ( svo ( ) ) {
             if ( d.s.is_small ) {
                 if ( size <= buff_size ( ) ) {
@@ -1649,11 +1649,11 @@ class podder {
 
     // resize.
 
-    void resize_reserve_only ( size_type const size ) {
+    void resize_reserve_only ( size_type const size ) noexcept {
         resize_reserve_impl ( size, false );
     }
 
-    void resize ( size_type const size ) {
+    void resize ( size_type const size ) noexcept {
         resize_reserve_impl ( size, true );
     }
 
@@ -2076,7 +2076,7 @@ void swap ( podder<Type, SizeType, GrowthPolicy> & a, podder<Type, SizeType, Gro
 
 
 template<typename T>
-void print ( podder<T> & p ) {
+void print ( podder<T> & p ) noexcept {
     p.print_svo ( );
     std::cout << "values   : ";
     for ( auto value : p ) {
