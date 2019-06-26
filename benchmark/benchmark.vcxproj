@@ -213,11 +213,11 @@
     <ClCompile Include="podder-benchmark.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\growth_policy.hpp" />
-    <ClInclude Include="..\include\null_allocator.hpp" />
     <ClInclude Include="..\include\podder.hpp" />
-    <ClInclude Include="..\include\pointer_iterator.hpp" />
-    <ClInclude Include="..\include\tagged_pointer.hpp" />
+    <ClInclude Include="..\include\podder\growth_policy.hpp" />
+    <ClInclude Include="..\include\podder\null_allocator.hpp" />
+    <ClInclude Include="..\include\podder\podder.hpp" />
+    <ClInclude Include="..\include\podder\tagged_pointer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
