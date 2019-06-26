@@ -86,7 +86,11 @@ template<int I> void div ( char ( * ) [ I % 2 == 1 ] = 0 ) {
 #endif
 
 #if _WIN32 and USE_MIMALLOC
-    #pragma comment ( lib, "mimalloc.lib" )
+    #if not defined ( USE_THIN_LTO )
+        #pragma comment ( lib, "mimalloc.lib" )
+    #else
+        #pragma comment ( lib, "mimalloc-thin-lto.lib" )
+    #endif
 #endif
 
 
