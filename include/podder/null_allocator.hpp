@@ -23,9 +23,7 @@
 
 #pragma once
 
-
 #include <memory>
-
 
 namespace pdr::detail {
 
@@ -33,9 +31,8 @@ template<typename T>
 class null_allocator {
 
     public:
-
-    using value_type = T;
-    using pointer = value_type *;
+    using value_type    = T;
+    using pointer       = value_type *;
     using const_pointer = typename std::pointer_traits<pointer>::template rebind<const value_type>;
 
     template<typename U>
@@ -43,31 +40,31 @@ class null_allocator {
         using other = null_allocator<U>;
     };
 
-    null_allocator ( ) noexcept { }
+    null_allocator ( ) noexcept {}
     template<typename U>
-    null_allocator ( null_allocator<U> const & ) noexcept { }
+    null_allocator ( null_allocator<U> const & ) noexcept {}
 
     constexpr pointer allocate ( std::size_t ) const noexcept { return nullptr; }
-    constexpr void deallocate ( pointer, std::size_t ) const noexcept { }
+    constexpr void deallocate ( pointer, std::size_t ) const noexcept {}
 
     using propagate_on_container_copy_assignment = std::false_type;
     using propagate_on_container_move_assignment = std::false_type;
-    using propagate_on_container_swap = std::false_type;
-    using is_always_equal = std::is_empty<null_allocator>;
+    using propagate_on_container_swap            = std::false_type;
+    using is_always_equal                        = std::is_empty<null_allocator>;
 };
 
-}
+} // namespace pdr::detail
 
 namespace pdr {
 
 template<typename T, typename U>
-bool operator == ( detail::null_allocator<T> const &, detail::null_allocator<U> const & ) noexcept {
+bool operator== ( detail::null_allocator<T> const &, detail::null_allocator<U> const & ) noexcept {
     return true;
 }
 
 template<typename T, typename U>
-bool operator != ( detail::null_allocator<T> const &, detail::null_allocator<U> const & ) noexcept {
+bool operator!= ( detail::null_allocator<T> const &, detail::null_allocator<U> const & ) noexcept {
     return false;
 }
 
-}
+} // namespace pdr

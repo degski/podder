@@ -23,11 +23,11 @@
 
 #include <array>
 #include <fstream>
-#include <sax/iostream.hpp> // <iostream> + nl, sp etc. defined...
 #include <iterator>
 #include <list>
 #include <map>
 #include <random>
+#include <sax/iostream.hpp> // <iostream> + nl, sp etc. defined...
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -35,22 +35,21 @@
 #include <benchmark/benchmark.h>
 
 #ifdef _WIN32
-#pragma comment ( lib, "Shlwapi.lib" )
+#    pragma comment( lib, "Shlwapi.lib" )
 #endif
 
-#if defined ( _DEBUG )
-#pragma comment ( lib, "benchmark_maind.lib" )
-#pragma comment ( lib, "benchmarkd.lib" )
+#if defined( _DEBUG )
+#    pragma comment( lib, "benchmark_maind.lib" )
+#    pragma comment( lib, "benchmarkd.lib" )
 #else
-#pragma comment ( lib, "benchmark_main.lib" )
-#pragma comment ( lib, "benchmark.lib" )
+#    pragma comment( lib, "benchmark_main.lib" )
+#    pragma comment( lib, "benchmark.lib" )
 #endif
 
 #include <sax/splitmix.hpp>
 #include <sax/uniform_int_distribution.hpp>
 
 #include "podder.hpp"
-
 
 // integer logN.
 
@@ -74,18 +73,18 @@ constexpr T next_power_2 ( const T n_ ) noexcept {
 
 template<typename T, typename = std::enable_if_t<std::conjunction_v<std::is_integral<T>, std::is_unsigned<T>>>>
 constexpr bool is_power_2 ( const T n_ ) noexcept {
-    return n_ and not ( n_ & ( n_ - 1 ) );
+    return n_ and not( n_ & ( n_ - 1 ) );
 }
 
 template<typename ValueType>
-static void custom_arguments ( benchmark::internal::Benchmark* b ) {
+static void custom_arguments ( benchmark::internal::Benchmark * b ) {
     const std::size_t bs = podder<ValueType>::buff_size ( );
-    b->Args ( { ( long long ) bs, 4096 / sizeof ( ValueType ) } );    ;
+    b->Args ( { ( long long ) bs, 4096 / sizeof ( ValueType ) } );
+    ;
     for ( std::size_t i = next_power_2 ( bs + is_power_2 ( bs ) ); i <= 4096u / sizeof ( ValueType ); i <<= 1 ) {
         b->Args ( { ( long long ) i, 4096 / sizeof ( ValueType ) } );
     }
 }
-
 
 template<class Container>
 void bm_emplace_back_random ( benchmark::State & state ) noexcept {
@@ -112,6 +111,6 @@ BENCHMARK_TEMPLATE ( bm_emplace_back_random, std::vector<std::uint8_t> )
 ->ReportAggregatesOnly ( true );
 */
 BENCHMARK_TEMPLATE ( bm_emplace_back_random, podder<std::uint8_t, std::uint32_t> )
-->Apply ( custom_arguments<std::uint8_t> )
-->Repetitions ( 8 )
-->ReportAggregatesOnly ( true );
+    ->Apply ( custom_arguments<std::uint8_t> )
+    ->Repetitions ( 8 )
+    ->ReportAggregatesOnly ( true );

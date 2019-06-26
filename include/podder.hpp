@@ -23,7 +23,4 @@
 
 #pragma once
 
-#include "podder/growth_policy.hpp"
-#include "podder/null_allocator.hpp"
-#include "podder/tagged_pointer.hpp"
 #include "podder/podder.hpp"
