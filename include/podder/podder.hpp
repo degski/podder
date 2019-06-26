@@ -366,8 +366,8 @@ class podder {
         std::memcpy ( ( void* ) this, ( void* ) & p, sizeof ( podder ) );
         p.small_clear ( );
     }
-    podder ( const std::initializer_list<value_type> il ) :
-        podder ( il.begin ( ), static_cast< size_type > ( il.size ( ) ) ) { }
+    podder ( std::initializer_list<value_type> il ) :
+        podder ( il.begin ( ), static_cast<size_type> ( il.size ( ) ) ) { }
     template<auto S>
     podder ( std::array<value_type, S> const & a ) :
         podder ( a.d ( ), static_cast< size_type > ( S ) ) { }

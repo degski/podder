@@ -94,7 +94,7 @@ void bm_emplace_back_random ( benchmark::State & state ) noexcept {
     for ( auto _ : state ) {
         state.PauseTiming ( );
         const std::int64_t is = sax::uniform_int_distribution<std::int64_t> ( 0, state.range ( 0 ) - 1 ) ( gen );
-        Container data ( static_cast<std::size_t> ( is ) );
+        Container data ( static_cast<typename Container::size_type> ( is ) );
         benchmark::DoNotOptimize ( data.data ( ) );
         auto i = sax::uniform_int_distribution<std::int64_t> ( 1, state.range ( 0 ) - is ) ( gen );
         state.ResumeTiming ( );
@@ -105,12 +105,13 @@ void bm_emplace_back_random ( benchmark::State & state ) noexcept {
     }
 }
 
-
+/*
 BENCHMARK_TEMPLATE ( bm_emplace_back_random, std::vector<std::uint8_t> )
 ->Apply ( custom_arguments<std::uint8_t> )
 ->Repetitions ( 8 )
 ->ReportAggregatesOnly ( true );
-BENCHMARK_TEMPLATE ( bm_emplace_back_random, podder<std::uint8_t> )
+*/
+BENCHMARK_TEMPLATE ( bm_emplace_back_random, podder<std::uint8_t, std::uint32_t> )
 ->Apply ( custom_arguments<std::uint8_t> )
 ->Repetitions ( 8 )
 ->ReportAggregatesOnly ( true );
