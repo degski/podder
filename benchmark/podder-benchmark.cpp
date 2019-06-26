@@ -80,9 +80,9 @@ constexpr bool is_power_2 ( const T n_ ) noexcept {
 template<typename ValueType>
 static void custom_arguments ( benchmark::internal::Benchmark* b ) {
     const std::size_t bs = podder<ValueType>::buff_size ( );
-    b->Args ( { ( long long ) bs, 1024 / sizeof ( ValueType ) } );    ;
-    for ( std::size_t i = next_power_2 ( bs + is_power_2 ( bs ) ); i <= 1024u / sizeof ( ValueType ); i <<= 1 ) {
-        b->Args ( { ( long long ) i, 1024 / sizeof ( ValueType ) } );
+    b->Args ( { ( long long ) bs, 4096 / sizeof ( ValueType ) } );    ;
+    for ( std::size_t i = next_power_2 ( bs + is_power_2 ( bs ) ); i <= 4096u / sizeof ( ValueType ); i <<= 1 ) {
+        b->Args ( { ( long long ) i, 4096 / sizeof ( ValueType ) } );
     }
 }
 
