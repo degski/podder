@@ -72,12 +72,12 @@ using is_release = std::true_type;
 
 template<int I>
 void div ( char ( * )[ I % 2 == 0 ] = 0 ) {
-    /* this is taken when I is even */
+    // this is taken when I is even.
 }
 
 template<int I>
 void div ( char ( * )[ I % 2 == 1 ] = 0 ) {
-    /* this is taken when I is odd */
+    // this is taken when I is odd.
 }
 
 // costumization point.
