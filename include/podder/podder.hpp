@@ -414,9 +414,8 @@ class podder {
             return;
         }
         if constexpr ( is_debug::value ) { // checking whether the above condition is sufficiently strong.
-            if ( not d.m.end ) {
+            if ( not d.m.end )
                 std::cerr << "This code in the destructor should be free-ing as well." << nl;
-            }
             return;
         }
     }
@@ -815,7 +814,7 @@ class podder {
         return *back_pointer ( );
     }
 
-    // d.
+    // data.
 
     [[ nodiscard ]] pointer data ( ) noexcept {
         return begin_pointer ( );
@@ -972,7 +971,7 @@ class podder {
         }
     }
 
-    // insert
+    // insert.
 
     [[ maybe_unused ]] iterator insert ( const_iterator pos, const_reference value ) {
         // std::cout << "iterator insert ( const_iterator pos, const_reference value )" << nl;
@@ -1693,7 +1692,7 @@ class podder {
 
     template<typename Container, contiguous_container_t<Container> * = nullptr>
     [[ nodiscard ]] bool operator != ( Container & rhs ) const noexcept {
-        return not ( *this == rhs );
+        return not operator == ( rhs );
     }
 
     template<typename Container, contiguous_container_t<Container> * = nullptr>
@@ -1728,12 +1727,12 @@ class podder {
 
     template<typename Container, contiguous_container_t<Container> * = nullptr>
     [[ nodiscard ]] bool operator <= ( Container & rhs ) const noexcept {
-        return not ( *this > rhs );
+        return not operator > ( rhs );
     }
 
     template<typename Container, contiguous_container_t<Container> * = nullptr>
     [[ nodiscard ]] bool operator >= ( Container & rhs ) const noexcept {
-        return not ( *this < rhs );
+        return not operator < ( rhs );
     }
 
     template<typename Container, discontiguous_container_t<Container> * = nullptr>
@@ -1746,7 +1745,7 @@ class podder {
 
     template<typename Container, discontiguous_container_t<Container> * = nullptr>
     [[ nodiscard ]] bool operator != ( Container & rhs ) const noexcept {
-        return not ( *this == rhs );
+        return not operator== ( rhs );
     }
 
     template<typename Container, discontiguous_container_t<Container> * = nullptr>
@@ -1761,12 +1760,12 @@ class podder {
 
     template<typename Container, discontiguous_container_t<Container> * = nullptr>
     [[ nodiscard ]] bool operator <= ( Container & rhs ) const noexcept {
-        return not ( *this > rhs );
+        return not operator > ( rhs );
     }
 
     template<typename Container, discontiguous_container_t<Container> * = nullptr>
     [[ nodiscard ]] bool operator >= ( Container & rhs ) const noexcept {
-        return not ( *this < rhs );
+        return not operator < ( rhs );
     }
 
     [[ nodiscard ]] bool operator == ( podder & rhs ) const noexcept {
@@ -1799,7 +1798,7 @@ class podder {
     }
 
     [[ nodiscard ]] bool operator != ( podder & rhs ) const noexcept {
-        return not ( *this == rhs );
+        return not operator== ( rhs );
     }
 
     [[ nodiscard ]] bool operator < ( podder & rhs ) const noexcept {
@@ -1847,12 +1846,14 @@ class podder {
     }
 
     [[ nodiscard ]] bool operator <= ( podder & rhs ) const noexcept {
-        return not ( *this > rhs );
+        return not operator > ( rhs );
     }
 
     [[ nodiscard ]] bool operator >= ( podder & rhs ) const noexcept {
-        return not ( *this < rhs );
+        return not operator < ( rhs );
     }
+
+    // size/capacity in bytes.
 
     [[ nodiscard ]] constexpr size_type size_in_bytes ( ) const noexcept {
         return size ( ) * size_type { sizeof ( value_type ) };
@@ -1904,7 +1905,7 @@ class podder {
         return end_pointer ( ) - 1;
     }
 
-    // SVO d structures.
+    // SVO data structures.
 
     PUBLIC
 
@@ -2062,8 +2063,8 @@ class podder {
 
 
 // additional deduction guide.
-///template<typename InIter>
-//podder ( InIter b, InIter e )->podder<typename std::iterator_traits<InIter>::value_type>;
+// template<typename InIter>
+// podder ( InIter b, InIter e )->podder<typename std::iterator_traits<InIter>::value_type>;
 
 
 // swap function, function (possibly) invalidates any references, pointers, or
