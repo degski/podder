@@ -104,11 +104,7 @@ namespace pdr {
 inline void free ( void * ptr ) noexcept { mi_free ( ptr ); }
 #else
 [[nodiscard]] inline void * malloc ( std::size_t size ) noexcept { return std::malloc ( size ); }
-[[nodiscard]] inline void * zalloc ( std::size_t size ) noexcept {
-    void * const p = std::malloc ( size );
-    std::memset ( p, 0, size );
-    return p;
-}
+[[nodiscard]] inline void * zalloc ( std::size_t size ) noexcept { return std::calloc ( 1u, size ); }
 [[nodiscard]] inline void * calloc ( std::size_t num, std::size_t size ) noexcept { return std::calloc ( num, size ); }
 [[nodiscard]] inline void * realloc ( void * ptr, std::size_t new_size ) noexcept { return std::realloc ( ptr, new_size ); }
 inline void free ( void * ptr ) noexcept { std::free ( ptr ); }
