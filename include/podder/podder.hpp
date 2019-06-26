@@ -250,22 +250,19 @@ class podder {
                 if ( count <= buff_size ( ) ) {
                     set_small_size ( count );
                     pointer p = d.s.buffer;
-                    while ( count-- ) {
+                    while ( count-- )
                         new ( p++ ) value_type ( );
-                    }
                 }
                 else {
                     new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
-                    while ( count-- ) {
+                    while ( count-- )
                         new ( d.m.end++ ) value_type ( );
-                    }
                 }
             }
             else {
                 new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
-                while ( count-- ) {
+                while ( count-- )
                     new ( d.m.end++ ) value_type ( );
-                }
             }
         }
         else {
@@ -287,22 +284,19 @@ class podder {
                 if ( count <= buff_size ( ) ) {
                     set_small_size ( count );
                     iterator end ( d.s.buffer );
-                    while ( first != last ) {
+                    while ( first != last )
                         *end++ = *first++;
-                    }
                 }
                 else {
                     new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
-                    while ( first != last ) {
+                    while ( first != last )
                         *d.m.end++ = *first++;
-                    }
                 }
             }
             else { // constexpr else.
                 new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
-                while ( first != last ) {
+                while ( first != last )
                     *d.m.end++ = *first++;
-                }
             }
         }
         else {
@@ -386,9 +380,8 @@ class podder {
             clear ( );
         }
         else if ( count <= buff_size ( ) ) {
-            if ( not d.s.is_small ) {
+            if ( not d.s.is_small )
                 std::free ( d.m.end - d.m.size );
-            }
             std::memcpy ( ( void* ) this, ( void* ) & rhs, sizeof ( podder ) );
         }
         else {
@@ -423,9 +416,8 @@ class podder {
         }
         if constexpr ( is_contiguous_container<Container>::value ) {
             if ( count <= buff_size ( ) ) {
-                if ( not d.s.is_small ) {
+                if ( not d.s.is_small )
                     std::free ( d.m.end - d.m.size );
-                }
                 std::memcpy ( ( void* ) d.s.buffer, ( void* ) &*std::begin ( container ), count * sizeof ( value_type ) );
                 set_small_size ( count );
             }
@@ -455,37 +447,32 @@ class podder {
             auto first = std::cbegin ( container );
             auto const last = std::cend ( container );
             if ( count <= buff_size ( ) ) {
-                if ( not d.s.is_small ) {
+                if ( not d.s.is_small )
                     std::free ( d.m.end - d.m.size );
-                }
                 set_small_size ( count );
                 iterator it ( d.s.buffer );
-                while ( first != last ) {
+                while ( first != last )
                     *it++ = *first++;
-                }
             }
             else {
                 if ( d.s.is_small ) {
                     new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
-                    while ( first != last ) {
+                    while ( first != last )
                         *d.m.end++ = *first++;
-                    }
                 }
                 else {
                     pointer p = d.m.end - d.m.size;
                     if ( count <= d.m.capacity ) {
                         d.m.size = count;
-                        while ( first != last ) {
+                        while ( first != last )
                             *p++ = *first++;
-                        }
                         d.m.end = p;
                     }
                     else {
                         d.m.capacity = d.m.size = count;
                         d.m.end = static_cast<pointer> ( std::realloc ( p, count * sizeof ( value_type ) ) );
-                        while ( first != last ) {
+                        while ( first != last )
                             *d.m.end++ = *first++;
-                        }
                     }
                 }
             }
@@ -496,9 +483,8 @@ class podder {
     [[ maybe_unused ]] podder & operator = ( value_type ( *a ) [ S ] ) {
         constexpr size_type count = static_cast< size_type > ( S );
         if constexpr ( count <= buff_size ( ) ) {
-            if ( not d.s.is_small ) {
+            if ( not d.s.is_small )
                 std::free ( d.m.end - d.m.size );
-            }
             std::memcpy ( ( void* ) d.s.buffer, ( void* ) a, count * sizeof ( value_type ) );
             set_small_size ( count );
         }
@@ -525,9 +511,8 @@ class podder {
         }
     }
     [[ maybe_unused ]] podder & operator = ( podder && rhs ) noexcept {
-        if ( not d.s.is_small ) {
+        if ( not d.s.is_small )
             std::free ( d.m.end - d.m.size );
-        }
         std::memcpy ( ( void* ) this, ( void* ) & rhs, sizeof ( podder ) );
         rhs.small_clear ( );
         return *this;
@@ -542,17 +527,15 @@ class podder {
                 if ( d.s.is_small ) {
                     if ( count <= buff_size ( ) ) {
                         pointer p = d.s.buffer, e = p + count;
-                        while ( p != e ) {
+                        while ( p != e )
                             *p++ = value;
-                        }
                         d.s.size = count;
                     }
                     else {
                         new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
                         pointer e = d.m.end + count;
-                        while ( d.m.end != e ) {
+                        while ( d.m.end != e )
                             *d.m.end++ = value;
-                        }
                     }
                 }
                 else {
@@ -560,15 +543,13 @@ class podder {
                         std::free ( d.m.end - d.m.size );
                         new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
                         pointer e = d.m.end + count;
-                        while ( d.m.end != e ) {
+                        while ( d.m.end != e )
                             *d.m.end++ = value;
-                        }
                     }
                     else {
                         pointer p = d.m.end - d.m.size, e = p + count;
-                        while ( p != e ) {
+                        while ( p != e )
                             *p++ = value;
-                        }
                         d.m.end += count - d.m.size;
                         d.m.size = count;
                     }
@@ -579,15 +560,13 @@ class podder {
                     std::free ( d.m.end - d.m.size );
                     new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
                     pointer e = d.m.end + count;
-                    while ( d.m.end != e ) {
+                    while ( d.m.end != e )
                         *d.m.end++ = value;
-                    }
                 }
                 else {
                     pointer p = d.m.end - d.m.size, e = p + count;
-                    while ( p != e ) {
+                    while ( p != e )
                         *p++ = value;
-                    }
                     d.m.end += count - d.m.size;
                     d.m.size = count;
                 }
@@ -610,31 +589,27 @@ class podder {
                 if ( d.s.is_small ) {
                     if ( count <= buff_size ( ) ) {
                         pointer p = d.s.buffer;
-                        while ( first != last ) {
+                        while ( first != last )
                             *p++ = *first++;
-                        }
                         d.s.size = count;
                     }
                     else {
                         new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
-                        while ( first != last ) {
+                        while ( first != last )
                             *d.m.end++ = *first++;
-                        }
                     }
                 }
                 else {
                     if ( count > d.m.capacity ) {
                         std::free ( d.m.end - d.m.size );
                         new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
-                        while ( first != last ) {
+                        while ( first != last )
                             *d.m.end++ = *first++;
-                        }
                     }
                     else {
                         pointer p = d.m.end - d.m.size;
-                        while ( first != last ) {
+                        while ( first != last )
                             *p++ = *first++;
-                        }
                         d.m.end += count - d.m.size;
                         d.m.size = count;
                     }
@@ -645,15 +620,13 @@ class podder {
                     std::free ( d.m.end - d.m.size );
                     new ( & d.m ) medium ( std::forward<medium> ( { count, count, static_cast<pointer> ( std::malloc ( count * sizeof ( value_type ) ) ) } ) );
                     pointer e = d.m.end + count;
-                    while ( d.m.end != e ) {
+                    while ( d.m.end != e )
                         *d.m.end++ = *first++;
-                    }
                 }
                 else {
                     pointer p = d.m.end - d.m.size, e = p + count;
-                    while ( p != e ) {
+                    while ( p != e )
                         *p++ = *first++;
-                    }
                     d.m.end += count - d.m.size;
                     d.m.size = count;
                 }
