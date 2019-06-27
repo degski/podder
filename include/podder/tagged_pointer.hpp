@@ -157,20 +157,17 @@ struct tagged_pointer {
     }
 
     [[nodiscard]] constexpr bool operator== ( tagged_pointer rhs ) const noexcept { return tp.ptr == rhs.tp.ptr; }
-
     [[nodiscard]] constexpr bool operator!= ( tagged_pointer rhs ) const noexcept { return tp.ptr != rhs.tp.ptr; }
 
     [[nodiscard]] constexpr bool operator< ( tagged_pointer rhs ) const noexcept {
         return static_cast<pointer> ( tp.tag.ptr ) < static_cast<pointer> ( rhs.tp.tag.ptr );
     }
-
     [[nodiscard]] constexpr bool operator> ( tagged_pointer rhs ) const noexcept {
         return static_cast<pointer> ( tp.tag.ptr ) > static_cast<pointer> ( rhs.tp.tag.ptr );
     }
 
-    [[nodiscard]] constexpr bool operator<= ( tagged_pointer rhs ) const noexcept { return not( *this > rhs ); }
-
-    [[nodiscard]] constexpr bool operator>= ( tagged_pointer rhs ) const noexcept { return not( *this < rhs ); }
+    [[nodiscard]] constexpr bool operator<= ( tagged_pointer rhs ) const noexcept { return not operator > ( rhs ); }
+    [[nodiscard]] constexpr bool operator>= ( tagged_pointer rhs ) const noexcept { return not operator < ( rhs ); }
 
     [[nodiscard]] friend constexpr value_type & operator* ( tagged_pointer tp ) noexcept {
         return *static_cast<pointer> ( tp.tp.tag.ptr );

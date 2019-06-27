@@ -62,7 +62,6 @@ constexpr T iLog ( const T n_, const T p_ = T ( 0 ) ) noexcept {
 
 template<typename T, typename = std::enable_if_t<std::conjunction_v<std::is_integral<T>, std::is_unsigned<T>>>>
 constexpr T ilog2 ( const T n_ ) noexcept {
-
     return iLog<2, T> ( n_ );
 }
 
@@ -80,7 +79,6 @@ template<typename ValueType>
 static void custom_arguments ( benchmark::internal::Benchmark * b ) {
     const std::size_t bs = podder<ValueType>::buff_size ( );
     b->Args ( { ( long long ) bs, 8192 / sizeof ( ValueType ) } );
-    ;
     for ( std::size_t i = next_power_2 ( bs + is_power_2 ( bs ) ); i <= 8192u / sizeof ( ValueType ); i <<= 1 ) {
         b->Args ( { ( long long ) i, 8192 / sizeof ( ValueType ) } );
     }
@@ -108,7 +106,7 @@ BENCHMARK_TEMPLATE ( bm_emplace_back_random, std::vector<std::uint8_t> )
     ->Apply ( custom_arguments<std::uint8_t> )
     ->Repetitions ( 4 )
     ->ReportAggregatesOnly ( true );
-BENCHMARK_TEMPLATE ( bm_emplace_back_random, podder<std::uint8_t, std::uint32_t> )
+BENCHMARK_TEMPLATE ( bm_emplace_back_random, podder<std::uint8_t, std::uint64_t> )
     ->Apply ( custom_arguments<std::uint8_t> )
     ->Repetitions ( 4 )
     ->ReportAggregatesOnly ( true );
