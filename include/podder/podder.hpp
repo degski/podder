@@ -119,15 +119,13 @@ inline void free ( void * ptr ) noexcept { std::free ( ptr ); }
 #endif
 } // namespace pdr
 
-template<typename Type = std::uint8_t, typename SizeType = std::size_t,
+template<typename Type = std::uint8_t, typename SizeType = std::int32_t,
          typename GrowthPolicy = visual_studio_growth_policy<SizeType>>
 class podder {
 
-    template<typename ST>
-    using is_size_type = std::disjunction<std::is_same<ST, std::uint32_t>, std::is_same<SizeType, std::uint64_t>>;
-
     static_assert ( std::is_trivially_copyable<Type>::value, "Type must be trivially copyable!" );
-    static_assert ( is_size_type<SizeType>::value, "SizeType must be an unsigned 32- or 64-bit integer type!" );
+    static_assert ( std::numeric_limits<typename std::make_unsigned<SizeType>::type>::digits >= 32,
+                    "SizeType must be an unsigned 32- or 64-bit integer type!" );
 
     PUBLIC
 
@@ -140,10 +138,9 @@ class podder {
     using const_reference = value_type const &;
     using rv_reference    = value_type &&;
 
-    using size_type = SizeType;
-    using signed_size_type =
-        typename std::conditional<std::is_same<size_type, std::uint32_t>::value, std::int32_t, std::int64_t>::type;
-    using difference_type = signed_size_type;
+    using size_type        = SizeType;
+    using signed_size_type = typename std::make_signed<size_type>::type;
+    using difference_type  = signed_size_type;
 
     using allocator_type = ::pdr::detail::null_allocator<Type>;
 
@@ -299,7 +296,6 @@ class podder {
             small_clear ( );
         }
     }
-    podder ( int count ) noexcept : podder ( static_cast<size_type> ( count ) ) {}
     template<typename InputIt, contiguous_input_iterator_t<InputIt> * = nullptr>
     podder ( InputIt first, InputIt last ) : podder ( &*first, static_cast<size_type> ( last - first ) ) {}
     template<typename InputIt, discontiguous_input_iterator_t<InputIt> * = nullptr>
@@ -1035,7 +1031,7 @@ class podder {
         if ( count ) {
             if constexpr ( svo ( ) ) {
                 if ( d.s.is_small ) {
-                    std::size_t const s1 = d.s.size + count; // s1 = new size.
+                    size_type const s1 = d.s.size + count; // s1 = new size.
                     if ( ( s1 ) <= buff_size ( ) ) {
                         pointer p = const_cast<pointer> ( pos );
                         std::memmove ( ( void * ) ( p + count ), ( void * ) p,
@@ -1060,7 +1056,7 @@ class podder {
                     }
                 }
                 else {                                           // medium.
-                    std::size_t const s1 = d.m.size + count;     // s1 = new size.
+                    size_type const s1 = d.m.size + count;       // s1 = new size.
                     if ( d.m.size == d.m.capacity ) {            // relocation.
                         pointer const old  = d.m.end - d.m.size; // begin.
                         d.m.capacity       = static_cast<size_type> ( growth_policy::grow_capacity_from ( s1 ) );
@@ -1085,7 +1081,7 @@ class podder {
                 }
             } // non-svo.
             else {
-                std::size_t const s1 = d.m.size + count;     // s1 = new size.
+                size_type const s1 = d.m.size + count;       // s1 = new size.
                 if ( d.m.size == d.m.capacity ) {            // relocation.
                     pointer const old  = d.m.end - d.m.size; // begin.
                     d.m.capacity       = static_cast<size_type> ( growth_policy::grow_capacity_from ( s1 ) );
@@ -1677,40 +1673,44 @@ class podder {
 
     template<typename Container, contiguous_container_t<Container> * = nullptr>
     [[nodiscard]] bool operator< ( Container & rhs ) const noexcept {
-        bool value = false;
+        using container_size_type = typename Container::size_type;
+        bool value                = false;
         if constexpr ( svo ( ) ) {
             if ( d.b.high )
-                value =
-                    std::memcmp ( ( void * ) d.s.buffer, ( void * ) rhs.data ( ),
-                                  std::min ( static_cast<std::size_t> ( d.s.size ), rhs.size ( ) ) * sizeof ( value_type ) ) < 0;
+                value = std::memcmp ( ( void * ) d.s.buffer, ( void * ) rhs.data ( ),
+                                      std::min ( static_cast<container_size_type> ( d.s.size ), rhs.size ( ) ) *
+                                          sizeof ( value_type ) ) < 0;
             else
-                value =
-                    std::memcmp ( ( void * ) ( d.m.end - d.m.size ), ( void * ) rhs.data ( ),
-                                  std::min ( static_cast<std::size_t> ( d.m.size ), rhs.size ( ) ) * sizeof ( value_type ) ) < 0;
+                value = std::memcmp ( ( void * ) ( d.m.end - d.m.size ), ( void * ) rhs.data ( ),
+                                      std::min ( static_cast<container_size_type> ( d.m.size ), rhs.size ( ) ) *
+                                          sizeof ( value_type ) ) < 0;
         }
         else {
             value = std::memcmp ( ( void * ) ( d.m.end - d.m.size ), ( void * ) rhs.data ( ),
-                                  std::min ( static_cast<std::size_t> ( d.m.size ), rhs.size ( ) ) * sizeof ( value_type ) ) < 0;
+                                  std::min ( static_cast<container_size_type> ( d.m.size ), rhs.size ( ) ) *
+                                      sizeof ( value_type ) ) < 0;
         }
         return value;
     }
 
     template<typename Container, contiguous_container_t<Container> * = nullptr>
     [[nodiscard]] bool operator> ( Container & rhs ) const noexcept {
-        bool value = false;
+        using container_size_type = typename Container::size_type;
+        bool value                = false;
         if constexpr ( svo ( ) ) {
             if ( d.b.high )
-                value =
-                    std::memcmp ( ( void * ) d.s.buffer, ( void * ) rhs.data ( ),
-                                  std::min ( static_cast<std::size_t> ( d.s.size ), rhs.size ( ) ) * sizeof ( value_type ) ) > 0;
+                value = std::memcmp ( ( void * ) d.s.buffer, ( void * ) rhs.data ( ),
+                                      std::min ( static_cast<container_size_type> ( d.s.size ), rhs.size ( ) ) *
+                                          sizeof ( value_type ) ) > 0;
             else
-                value =
-                    std::memcmp ( ( void * ) ( d.m.end - d.m.size ), ( void * ) rhs.data ( ),
-                                  std::min ( static_cast<std::size_t> ( d.m.size ), rhs.size ( ) ) * sizeof ( value_type ) ) > 0;
+                value = std::memcmp ( ( void * ) ( d.m.end - d.m.size ), ( void * ) rhs.data ( ),
+                                      std::min ( static_cast<container_size_type> ( d.m.size ), rhs.size ( ) ) *
+                                          sizeof ( value_type ) ) > 0;
         }
         else {
             value = std::memcmp ( ( void * ) ( d.m.end - d.m.size ), ( void * ) rhs.data ( ),
-                                  std::min ( static_cast<std::size_t> ( d.m.size ), rhs.size ( ) ) * sizeof ( value_type ) ) > 0;
+                                  std::min ( static_cast<container_size_type> ( d.m.size ), rhs.size ( ) ) *
+                                      sizeof ( value_type ) ) > 0;
         }
         return value;
     }
@@ -1854,7 +1854,6 @@ class podder {
     }
 
     [[nodiscard]] bool operator<= ( podder & rhs ) const noexcept { return not operator> ( rhs ); }
-
     [[nodiscard]] bool operator>= ( podder & rhs ) const noexcept { return not operator< ( rhs ); }
 
     // size/capacity in bytes.
