@@ -106,7 +106,7 @@ BENCHMARK_TEMPLATE ( bm_emplace_back_random, std::vector<std::uint8_t> )
     ->Apply ( custom_arguments<std::uint8_t> )
     ->Repetitions ( 4 )
     ->ReportAggregatesOnly ( true );
-BENCHMARK_TEMPLATE ( bm_emplace_back_random, podder<std::uint8_t, std::uint64_t> )
+BENCHMARK_TEMPLATE ( bm_emplace_back_random, podder<std::uint8_t, std::int64_t> )
     ->Apply ( custom_arguments<std::uint8_t> )
     ->Repetitions ( 4 )
     ->ReportAggregatesOnly ( true );

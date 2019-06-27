@@ -119,7 +119,7 @@ inline void free ( void * ptr ) noexcept { std::free ( ptr ); }
 #endif
 } // namespace pdr
 
-template<typename Type = std::uint8_t, typename SizeType = std::int32_t,
+template<typename Type = std::uint8_t, typename SizeType = std::size_t,
          typename GrowthPolicy = visual_studio_growth_policy<SizeType>>
 class podder {
 
