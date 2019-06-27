@@ -27,7 +27,7 @@
 #include <list>
 #include <map>
 #include <random>
-#include <sax/iostream.hpp> // <iostream> + nl, sp etc. defined...
+#include <sax/iostream.hpp>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -79,10 +79,10 @@ constexpr bool is_power_2 ( const T n_ ) noexcept {
 template<typename ValueType>
 static void custom_arguments ( benchmark::internal::Benchmark * b ) {
     const std::size_t bs = podder<ValueType>::buff_size ( );
-    b->Args ( { ( long long ) bs, 4096 / sizeof ( ValueType ) } );
+    b->Args ( { ( long long ) bs, 8192 / sizeof ( ValueType ) } );
     ;
-    for ( std::size_t i = next_power_2 ( bs + is_power_2 ( bs ) ); i <= 4096u / sizeof ( ValueType ); i <<= 1 ) {
-        b->Args ( { ( long long ) i, 4096 / sizeof ( ValueType ) } );
+    for ( std::size_t i = next_power_2 ( bs + is_power_2 ( bs ) ); i <= 8192u / sizeof ( ValueType ); i <<= 1 ) {
+        b->Args ( { ( long long ) i, 8192 / sizeof ( ValueType ) } );
     }
 }
 
@@ -97,20 +97,18 @@ void bm_emplace_back_random ( benchmark::State & state ) noexcept {
         benchmark::DoNotOptimize ( data.data ( ) );
         auto i = sax::uniform_int_distribution<std::int64_t> ( 1, state.range ( 0 ) - is ) ( gen );
         state.ResumeTiming ( );
-        while ( i-- ) {
-            data.emplace_back ( ( value_type ) i );
-        }
+        while ( i-- )
+            data.emplace_back ( static_cast<value_type> ( i ) );
         benchmark::ClobberMemory ( );
     }
 }
 
-/*
+
 BENCHMARK_TEMPLATE ( bm_emplace_back_random, std::vector<std::uint8_t> )
-->Apply ( custom_arguments<std::uint8_t> )
-->Repetitions ( 8 )
-->ReportAggregatesOnly ( true );
-*/
+    ->Apply ( custom_arguments<std::uint8_t> )
+    ->Repetitions ( 4 )
+    ->ReportAggregatesOnly ( true );
 BENCHMARK_TEMPLATE ( bm_emplace_back_random, podder<std::uint8_t, std::uint32_t> )
     ->Apply ( custom_arguments<std::uint8_t> )
-    ->Repetitions ( 8 )
+    ->Repetitions ( 4 )
     ->ReportAggregatesOnly ( true );
