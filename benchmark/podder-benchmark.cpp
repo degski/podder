@@ -101,11 +101,31 @@ void bm_emplace_back_random ( benchmark::State & state ) noexcept {
 }
 
 
+#include <pector/pector.h>
+#include <pector/malloc_allocator.h>
+#include <pector/mimalloc_allocator.h>
+
+template<typename T, typename S>
+using pector = pt::pector<T, pt::malloc_allocator<T, true, false>, S, pt::default_recommended_size, false>;
+template<typename T, typename S>
+using mipector = pt::pector<T, pt::mimalloc_allocator<T, true, false>, S, pt::default_recommended_size, false>;
+
+
 BENCHMARK_TEMPLATE ( bm_emplace_back_random, std::vector<std::uint8_t> )
     ->Apply ( custom_arguments<std::uint8_t> )
     ->Repetitions ( 4 )
     ->ReportAggregatesOnly ( true );
+BENCHMARK_TEMPLATE ( bm_emplace_back_random, pector<std::uint8_t, std::int64_t> )
+    ->Apply ( custom_arguments<std::uint8_t> )
+    ->Repetitions ( 4 )
+    ->ReportAggregatesOnly ( true );
+BENCHMARK_TEMPLATE ( bm_emplace_back_random, mipector<std::uint8_t, std::int64_t> )
+    ->Apply ( custom_arguments<std::uint8_t> )
+    ->Repetitions ( 4 )
+    ->ReportAggregatesOnly ( true );
+/*
 BENCHMARK_TEMPLATE ( bm_emplace_back_random, podder<std::uint8_t, std::int64_t> )
     ->Apply ( custom_arguments<std::uint8_t> )
     ->Repetitions ( 4 )
     ->ReportAggregatesOnly ( true );
+*/
