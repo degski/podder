@@ -90,9 +90,9 @@ void div ( char ( * )[ I % 2 == 1 ] = 0 ) {
 #if _WIN32 and USE_MIMALLOC
 #    if defined( USE_THIN_LTO )
 #        if defined( _DEBUG )
-#            pragma comment( lib, "mimalloc-thin-lto-s-d.lib" )
+#            pragma comment( lib, "mimalloc-tlto-s-d.lib" )
 #        else
-#            pragma comment( lib, "mimalloc-thin-lto-s.lib" )
+#            pragma comment( lib, "mimalloc-tlto-s.lib" )
 #        endif
 #    else
 #        if defined( _DEBUG )
