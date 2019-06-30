@@ -87,22 +87,6 @@ void div ( char ( * )[ I % 2 == 1 ] = 0 ) {
 #    include <mimalloc.h>
 #endif
 
-#if _WIN32 and USE_MIMALLOC
-#    if defined( USE_THIN_LTO )
-#        if defined( _DEBUG )
-#            pragma comment( lib, "mimalloc-tlto-s-d.lib" )
-#        else
-#            pragma comment( lib, "mimalloc-tlto-s.lib" )
-#        endif
-#    else
-#        if defined( _DEBUG )
-#            pragma comment( lib, "mimalloc-s-d.lib" )
-#        else
-#            pragma comment( lib, "mimalloc-s.lib" )
-#        endif
-#    endif
-#endif
-
 namespace pdr {
 #if USE_MIMALLOC
 [[nodiscard]] inline void * malloc ( std::size_t size ) noexcept { return mi_malloc ( size ); }
