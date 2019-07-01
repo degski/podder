@@ -140,7 +140,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN64;_DEBUG;_CONSOLE;NOMINMAX;SFML_STATIC;USE_LTO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
@@ -192,7 +192,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>
       </SDLCheck>
-      <PreprocessorDefinitions>WIN64;NDEBUG;_CONSOLE;NOMINMAX;SFML_STATIC;USE_LTO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
@@ -215,6 +215,7 @@
     <ClCompile Include="podder-benchmark.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\mimalloc.h" />
     <ClInclude Include="..\include\podder.hpp" />
     <ClInclude Include="..\include\podder\growth_policy.hpp" />
     <ClInclude Include="..\include\podder\null_allocator.hpp" />

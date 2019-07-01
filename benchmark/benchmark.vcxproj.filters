@@ -35,5 +35,8 @@
     <ClInclude Include="..\include\podder\tagged_pointer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\mimalloc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

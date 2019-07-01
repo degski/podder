@@ -84,6 +84,11 @@ void div ( char ( * )[ I % 2 == 1 ] = 0 ) {
 #define USE_MIMALLOC true
 
 #if USE_MIMALLOC
+#    if defined( _DEBUG )
+#        define USE_MIMALLOC_LTO false
+#    else
+#        define USE_MIMALLOC_LTO true
+#    endif
 #    include <mimalloc.h>
 #endif
 
