@@ -626,3 +626,105 @@ int main ( ) {
 
     return EXIT_SUCCESS;
 }
+
+
+#if 0
+
+// MIT License
+//
+// Copyright (c) 2019 degski
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#pragma once
+
+#include <cstddef>
+#include <cstdlib>
+
+#include "mimalloc/mimalloc.h"
+
+#if _WIN32
+#    if defined( USE_MIMALLOC_LTO )
+#        if USE_MIMALLOC_LTO
+#            if MI_SECURE
+#                if defined( __clang__ )
+#                    if defined( _DEBUG )
+#                        pragma comment( lib, "mimalloc-secure-clang9-thin-lto-s-d.lib" )
+#                    else
+#                        pragma comment( lib, "mimalloc-secure-clang9-thin-lto-s.lib" )
+#                    endif
+#                else
+#                    if defined( _DEBUG )
+#                        pragma comment( lib, "mimalloc-secure-msvc142-ltcg-s-d.lib" )
+#                    else
+#                        pragma comment( lib, "mimalloc-secure-msvc142-ltcg-s.lib" )
+#                    endif
+#                endif
+#            else
+#                if defined( __clang__ )
+#                    if defined( _DEBUG )
+#                        pragma comment( lib, "mimalloc-clang9-thin-lto-s-d.lib" )
+#                    else
+#                        pragma comment( lib, "mimalloc-clang9-thin-lto-s.lib" )
+#                    endif
+#                else
+#                    if defined( _DEBUG )
+#                        pragma comment( lib, "mimalloc-msvc142-ltcg-s-d.lib" )
+#                    else
+#                        pragma comment( lib, "mimalloc-msvc142-ltcg-s.lib" )
+#                    endif
+#                endif
+#            endif
+#        else
+#            if MI_SECURE
+#                if defined( __clang__ )
+#                    if defined( _DEBUG )
+#                        pragma comment( lib, "mimalloc-secure-clang9-s-d.lib" )
+#                    else
+#                        pragma comment( lib, "mimalloc-secure-clang9-s.lib" )
+#                    endif
+#                else
+#                    if defined( _DEBUG )
+#                        pragma comment( lib, "mimalloc-secure-msvc142-s-d.lib" )
+#                    else
+#                        pragma comment( lib, "mimalloc-secure-msvc142-s.lib" )
+#                    endif
+#                endif
+#            else
+#                if defined( __clang__ )
+#                    if defined( _DEBUG )
+#                        pragma comment( lib, "mimalloc-clang9-s-d.lib" )
+#                    else
+#                        pragma comment( lib, "mimalloc-clang9-s.lib" )
+#                    endif
+#                else
+#                    if defined( _DEBUG )
+#                        pragma comment( lib, "mimalloc-msvc142-s-d.lib" )
+#                    else
+#                        pragma comment( lib, "mimalloc-msvc142-s.lib" )
+#                    endif
+#                endif
+#            endif
+#        endif
+#    else
+#        error "define USE_MIMALLOC_LTO=1 or USE_MIMALLOC_LTO=0"
+#    endif
+#endif
+
+#endif // if 0
