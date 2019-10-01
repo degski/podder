@@ -758,7 +758,7 @@ class podder {
 
     PUBLIC
 
-        [[nodiscard]] reference
+    [[nodiscard]] reference
         at ( size_type pos ) {
         return at_impl ( pos );
     }
@@ -1306,8 +1306,7 @@ class podder {
 
     PRIVATE
 
-        [[nodiscard]] bool
-        not_have_duplicates ( const_reference value ) const noexcept pure_function {
+    [[nodiscard]] bool not_have_duplicates ( const_reference value ) const noexcept pure_function {
         bool not_found = true;
         pointer p = begin_pointer ( ), e = end_pointer ( );
         while ( p != e ) {
@@ -1330,13 +1329,12 @@ class podder {
 
     PUBLIC
 
-        // unordered_erase.
+    // unordered_erase.
 
-        // A  Nike(tm) function (Just Do It!). Replaces the to be erased value
-        // with the back () value and decrements size, no checking of any kind.
-        // Returns an iterator to the value after the erased value.
-        [[maybe_unused]] iterator
-        unchecked_unordered_erase ( iterator pos ) noexcept {
+    // A  Nike(tm) function (Just Do It!). Replaces the to be erased value
+    // with the back () value and decrements size, no checking of any kind.
+    // Returns an iterator to the value after the erased value.
+    [[maybe_unused]] iterator unchecked_unordered_erase ( iterator pos ) noexcept {
         --d.m.size;
         if ( d.s.is_small )
             *pos = d.s.buffer[ d.m.size ];
@@ -1351,7 +1349,7 @@ class podder {
         if constexpr ( is_debug::value ) {
             if ( have_duplicates ( value ) )
                 throw std::runtime_error (
-                    "unordered_erase_unique is applied to a podder containing duplicates of some of it's values" );
+                    "unordered_erase_unique is applied to a podder containing duplicates of some of its values" );
         }
         pointer p = begin_pointer ( );
         while ( p <= d.m.end ) {
@@ -1412,7 +1410,20 @@ class podder {
                                                 // (faster than gcc-style jump-table).
         pointer pos = nullptr;
         if constexpr ( svo ( ) ) {
-            if ( d.s.is_small ) {                 // assign into svo vector.
+            if ( not d.s.is_small ) {
+                if ( d.m.size == d.m.capacity ) { // relocate.
+                    d.m.end = static_cast<pointer> ( pdr::realloc (
+                                  d.m.end - d.m.size,
+                                  ( d.m.capacity += d.m.capacity / 2 /* growth_policy::grow_capacity_from ( d.m.size ) */ ) *
+                                      sizeof ( value_type ) ) ) +
+                              d.m.size;
+                }
+                ++d.m.size;
+                assert ( d.m.size <= d.m.capacity );
+                assert ( buff_size ( ) < d.m.capacity );
+                pos = new ( d.m.end++ ) value_type{ std::forward<Args> ( args )... };
+            }
+            else { // assign into svo vector.
                 if ( d.s.size < buff_size ( ) ) { // assign into small vector.
                     assert ( d.s.size <= buff_size ( ) );
                     pos = new ( d.s.buffer + d.s.size++ ) value_type{ std::forward<Args> ( args )... };
@@ -1428,25 +1439,14 @@ class podder {
                     pos = new ( p ) value_type{ std::forward<Args> ( args )... };
                 }
             }
-            else {
-                if ( d.m.size == d.m.capacity ) { // relocate.
-                    d.m.end = static_cast<pointer> ( pdr::realloc (
-                                  d.m.end - d.m.size,
-                                  ( d.m.capacity = growth_policy::grow_capacity_from ( d.m.size ) ) * sizeof ( value_type ) ) ) +
-                              d.m.size;
-                }
-                ++d.m.size;
-                assert ( d.m.size <= d.m.capacity );
-                assert ( buff_size ( ) < d.m.capacity );
-                pos = new ( d.m.end++ ) value_type{ std::forward<Args> ( args )... };
-            }
         }
         else {                                // assign into non-svo (medium) vector.
             if ( d.m.size == d.m.capacity ) { // not allocated or relocate.
                 if ( d.m.capacity )           // relocate.
                     d.m.end = static_cast<pointer> ( pdr::realloc (
                                   d.m.end - d.m.size,
-                                  ( d.m.capacity = growth_policy::grow_capacity_from ( d.m.size ) ) * sizeof ( value_type ) ) ) +
+                                  ( d.m.capacity += d.m.capacity / 2 /* growth_policy::grow_capacity_from ( d.m.size ) */ ) *
+                                      sizeof ( value_type ) ) ) +
                               d.m.size;
                 else // allocate.
                     d.m.end = static_cast<pointer> ( pdr::malloc ( ( d.m.capacity = growth_policy::grow_capacity_from ( ) ) *

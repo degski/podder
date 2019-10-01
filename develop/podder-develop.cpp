@@ -41,14 +41,13 @@
 
 #ifdef _WIN32
 #    pragma comment( lib, "Shlwapi.lib" )
-#endif
-
-#if defined( _DEBUG )
+#ifndef NDEBUG
 #    pragma comment( lib, "benchmark_maind.lib" )
 #    pragma comment( lib, "benchmarkd.lib" )
 #else
 #    pragma comment( lib, "benchmark_main.lib" )
 #    pragma comment( lib, "benchmark.lib" )
+#endif
 #endif
 
 #include <sax/splitmix.hpp>

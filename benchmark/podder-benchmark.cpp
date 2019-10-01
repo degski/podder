@@ -36,7 +36,7 @@
 
 #ifdef _WIN32
 #    pragma comment( lib, "Shlwapi.lib" )
-#if defined( _DEBUG )
+#ifndef NDEBUG
 #    pragma comment( lib, "benchmark_maind.lib" )
 #    pragma comment( lib, "benchmarkd.lib" )
 #else
@@ -47,6 +47,8 @@
 
 #include <sax/splitmix.hpp>
 #include <sax/uniform_int_distribution.hpp>
+
+#define MI_SECURE true
 
 #include "podder.hpp"
 
@@ -85,13 +87,15 @@ static void custom_arguments ( benchmark::internal::Benchmark * b ) {
 template<class Container>
 void bm_emplace_back_random ( benchmark::State & state ) noexcept {
     using value_type = typename Container::value_type;
+    using size_type = typename Container::size_type;
     sax::splitmix64 gen;
     for ( auto _ : state ) {
         state.PauseTiming ( );
-        const std::int64_t is = sax::uniform_int_distribution<std::int64_t> ( 0, state.range ( 0 ) - 1 ) ( gen );
-        Container data ( static_cast<typename Container::size_type> ( is ) );
+        size_type const is =
+            sax::uniform_int_distribution<size_type> ( size_type{ 0 }, static_cast<size_type> ( state.range ( 0u ) - 1 ) ) ( gen );
+        Container data ( static_cast<size_type> ( is ) );
         benchmark::DoNotOptimize ( data.data ( ) );
-        auto i = sax::uniform_int_distribution<std::int64_t> ( 1, state.range ( 0 ) - is ) ( gen );
+        size_type i = sax::uniform_int_distribution<size_type> ( size_type{ 1 }, static_cast<size_type> (  state.range ( 0u ) - is ) ) ( gen );
         state.ResumeTiming ( );
         while ( i-- )
             data.emplace_back ( static_cast<value_type> ( i ) );
@@ -99,31 +103,41 @@ void bm_emplace_back_random ( benchmark::State & state ) noexcept {
     }
 }
 
-
 #include <pector/pector.h>
 #include <pector/malloc_allocator.h>
 #include <pector/mimalloc_allocator.h>
 
 template<typename T, typename S>
-using pector = pt::pector<T, pt::malloc_allocator<T, true, false>, S, pt::default_recommended_size, false>;
+using alpector = pt::pector<T, std::allocator<T>, S, pt::default_recommended_size, false>;
+template<typename T, typename S>
+using mapector = pt::pector<T, pt::malloc_allocator<T, true, false>, S, pt::default_recommended_size, false>;
 template<typename T, typename S>
 using mipector = pt::pector<T, pt::mimalloc_allocator<T, true, false>, S, pt::default_recommended_size, false>;
 
-
+/*
 BENCHMARK_TEMPLATE ( bm_emplace_back_random, std::vector<std::uint8_t> )
     ->Apply ( custom_arguments<std::uint8_t> )
     ->Repetitions ( 4 )
     ->ReportAggregatesOnly ( true );
-BENCHMARK_TEMPLATE ( bm_emplace_back_random, pector<std::uint8_t, std::int64_t> )
+*/
+
+using size_type = std::uint64_t;
+
+BENCHMARK_TEMPLATE ( bm_emplace_back_random, alpector<std::uint8_t, size_type> )
     ->Apply ( custom_arguments<std::uint8_t> )
     ->Repetitions ( 4 )
     ->ReportAggregatesOnly ( true );
-BENCHMARK_TEMPLATE ( bm_emplace_back_random, mipector<std::uint8_t, std::int64_t> )
+BENCHMARK_TEMPLATE ( bm_emplace_back_random, mapector<std::uint8_t, size_type> )
     ->Apply ( custom_arguments<std::uint8_t> )
     ->Repetitions ( 4 )
     ->ReportAggregatesOnly ( true );
+BENCHMARK_TEMPLATE ( bm_emplace_back_random, mipector<std::uint8_t, size_type> )
+    ->Apply ( custom_arguments<std::uint8_t> )
+    ->Repetitions ( 4 )
+    ->ReportAggregatesOnly ( true );
+
 /*
-BENCHMARK_TEMPLATE ( bm_emplace_back_random, podder<std::uint8_t, std::int64_t> )
+BENCHMARK_TEMPLATE ( bm_emplace_back_random, podder<std::uint8_t, size_type> )
     ->Apply ( custom_arguments<std::uint8_t> )
     ->Repetitions ( 4 )
     ->ReportAggregatesOnly ( true );
